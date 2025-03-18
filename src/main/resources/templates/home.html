@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Gallery Platform - Home</title>
+    <link rel="stylesheet" th:href="@{/css/modern.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="navbar">
+    <div class="container">
+        <div class="logo">
+            <a th:href="@{/}">AutoGallery</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-overlay">
+        <div class="container">
+            <h1>Browse Car Listings</h1>
+            <p>Scroll through our curated car listings, bookmark your favorites, and view more details.</p>
+        </div>
+    </div>
+</section>
+
+<section class="listings container">
+    <h2>Car Listings</h2>
+    <div class="listing-items">
+        <div class="listing-card" th:each="listing : ${listings}">
+            <div class="listing-image">
+                <img th:src="${#lists.isEmpty(listing.images) ? '/images/placeholder.jpg' : listing.images.get(0).url}" alt="Car Image">
+            </div>
+            <div class="listing-details">
+                <h3 th:text="${listing.title}">Listing Title</h3>
+                <p th:text="'Price: $' + ${listing.price}">Price</p>
+                <p th:text="'Year: ' + ${listing.yearOfManufacture}">Year</p>
+                <div class="listing-actions">
+                    <a class="cta-btn" th:href="@{'/listings/' + ${listing.id}}">View More Details</a>
+                    <a class="bookmark-btn" th:href="@{'/bookmarks/add/' + ${listing.id}}">Bookmark</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>

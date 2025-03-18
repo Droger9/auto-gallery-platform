@@ -40,6 +40,9 @@ public class Listing {
     @Column(nullable = false)
     private int yearOfManufacture;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @OneToOne (mappedBy = "listing", fetch = FetchType.EAGER)
     private Car car;
 
