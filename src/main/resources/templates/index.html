@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto Gallery Platform</title>
+    <link rel="stylesheet" th:href="@{/css/modern.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="container">
+        <div class="logo">
+            <a th:href="@{/}">AutoGallery</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/login}">Login</a></li>
+                <li><a th:href="@{/register}">Register</a></li>
+                <li><a th:href="@{/logout}">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+<section class="hero">
+    <div class="hero-overlay">
+        <div class="container">
+            <h1>Discover Your Next Ride</h1>
+            <p>Experience the best car listings with stunning visuals and seamless browsing.</p>
+            <a class="cta-btn" th:href="@{/register}">Get Started</a>
+        </div>
+    </div>
+
+    <div class="scroll-down" onclick="scrollToSection('testimonials')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</section>
+
+<section class="testimonials container" id="testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial-items">
+        <div class="testimonial-item">
+            <p>"Auto Gallery Platform is the best site for finding your dream car!"</p>
+            <h4>- Alex</h4>
+        </div>
+        <div class="testimonial-item">
+            <p>"The user experience is top-notch. Highly recommend it!"</p>
+            <h4>- Jamie</h4>
+        </div>
+        <div class="testimonial-item">
+            <p>"A clean, modern interface and excellent listings."</p>
+            <h4>- Taylor</h4>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+
+</body>
+</html>
