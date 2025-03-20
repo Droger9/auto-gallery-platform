@@ -10,32 +10,16 @@
 </head>
 <body>
 
-<header class="navbar">
-    <div class="container">
-        <div class="logo">
-            <a th:href="@{/}">AutoGallery</a>
-        </div>
-        <nav>
-            <ul>
-                <li><a th:href="@{/}">Home</a></li>
-                <li><a th:href="@{/login}">Login</a></li>
-                <li><a th:href="@{/register}">Register</a></li>
-                <li><a th:href="@{/logout}">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
-
+<div th:replace="fragments/header :: header-fragment"></div>
 
 <section class="hero">
     <div class="hero-overlay">
         <div class="container">
             <h1>Discover Your Next Ride</h1>
             <p>Experience the best car listings with stunning visuals and seamless browsing.</p>
-            <a class="cta-btn" th:href="@{/register}">Get Started</a>
+            <a class="hero-cta-btn" th:href="@{/register}">Get Started</a>
         </div>
     </div>
-
     <div class="scroll-down" onclick="scrollToSection('testimonials')">
         <span></span>
         <span></span>
@@ -72,7 +56,6 @@
         document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
 </script>
-
 
 </body>
 </html>

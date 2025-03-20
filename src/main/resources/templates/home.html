@@ -9,18 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header class="navbar">
-    <div class="container">
-        <div class="logo">
-            <a th:href="@{/}">AutoGallery</a>
-        </div>
-        <nav>
-            <ul>
-                <li><a th:href="@{/logout}">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+
+<div th:replace="fragments/header :: header-fragment"></div>
 
 <section class="hero">
     <div class="hero-overlay">

@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Common Header Fragment</title>
+</head>
+<body>
+<div th:fragment="header-fragment">
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">
+        <a th:href="@{/}">AutoGallery</a>
+      </div>
+      <nav>
+        <ul>
+          <li th:if="${user}">
+            <a th:href="@{/home}">Home</a>
+          </li>
+
+          <li th:unless="${user}">
+            <a th:href="@{/login}">Login</a>
+          </li>
+          <li th:unless="${user}">
+            <a th:href="@{/register}">Register</a>
+          </li>
+
+          <li th:if="${user}">
+            <a th:href="@{/listings/add}" class="cta-btn">Add Listing</a>
+          </li>
+
+          <li th:if="${user}">
+            <a th:href="@{/logout}">Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+</div>
+</body>
+</html>

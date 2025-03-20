@@ -18,7 +18,6 @@ body {
     margin: 0 auto;
 }
 
-/* Navigation Bar */
 .navbar {
     background: rgba(0, 0, 0, 0.8);
     padding: 1rem 0;
@@ -68,7 +67,6 @@ body {
     transform: translateY(-3px);
 }
 
-/* Hero Section */
 .hero {
     height: 100vh;
     background: url('../images/hero.jpg') center/cover no-repeat;
@@ -114,7 +112,7 @@ body {
     margin-bottom: 2rem;
 }
 
-.cta-btn {
+.hero-cta-btn {
     background: #ff9900;
     color: #fff;
     padding: 1rem 2.5rem;
@@ -123,8 +121,7 @@ body {
     font-weight: 700;
     transition: background 0.3s ease, transform 0.3s ease;
 }
-
-.cta-btn:hover {
+.hero-cta-btn:hover {
     background: #e68a00;
     transform: scale(1.05);
 }
@@ -198,11 +195,6 @@ footer {
     text-align: center;
     padding: 1rem 0;
 }
-.error {
-    color: #ff3300;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-}
 
 .register-form {
     background: #fff;
@@ -226,7 +218,6 @@ footer {
     font-size: 1rem;
 }
 
-/* Form Field and Button Adjustments (if not already defined) */
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
@@ -259,13 +250,6 @@ footer {
 .form-actions button:hover {
     background: #e68a00;
     transform: scale(1.05);
-}
-
-.error {
-    color: #ff3300;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    text-align: left;
 }
 
 .login-form {
@@ -379,4 +363,22 @@ footer {
     transform: scale(1.05);
 }
 
-
+.cta-btn {
+    background: #ff9900;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.cta-btn:hover {
+    background: #e68a00;
+    transform: scale(1.05);
+}
+.error {
+    color: red !important;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    text-align: left;
+}
