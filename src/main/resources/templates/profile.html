@@ -68,11 +68,15 @@
             <p>You haven't bookmarked any listings yet.</p>
         </div>
         <div class="listing-items" th:unless="${#lists.isEmpty(bookmarkedListings)}">
-            <div class="listing-card" th:each="listing : ${bookmarkedListings}">
+            <div class="listing-card"
+                 th:each="listing : ${bookmarkedListings}"
+                 th:if="${!listing.deleted}">
+
+
                 <div class="listing-image">
                     <img th:src="${#lists.isEmpty(listing.images)
-                                  ? '/images/placeholder.jpg'
-                                  : listing.images.get(0).url}"
+                          ? '/images/placeholder.jpg'
+                          : listing.images.get(0).url}"
                          alt="Car Image">
                 </div>
                 <div class="listing-details" style="padding: 1rem;">
@@ -86,6 +90,7 @@
                 </div>
             </div>
         </div>
+
     </section>
 </main>
 
