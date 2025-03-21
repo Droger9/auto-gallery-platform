@@ -17,31 +17,12 @@
 
   <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
-
     <h3 th:text="${listing.title}">Sample Title</h3>
-
-    <p>
-      <strong>Price:</strong>
-      <span th:text="${listing.price}">1234</span>
-    </p>
-
-    <p>
-      <strong>Color:</strong>
-      <span th:text="${listing.color}">Black</span>
-    </p>
-
-    <p>
-      <strong>Year of Manufacture:</strong>
-      <span th:text="${listing.yearOfManufacture}">2022</span>
-    </p>
-
-    <p>
-      <strong>Phone Number:</strong>
-      <span th:text="${listing.phoneNumber}">555-1234</span>
-    </p>
-
-    <p>
-      <strong>Created At:</strong>
+    <p><strong>Price:</strong> <span th:text="${listing.price}">1234</span></p>
+    <p><strong>Color:</strong> <span th:text="${listing.color}">Black</span></p>
+    <p><strong>Year of Manufacture:</strong> <span th:text="${listing.yearOfManufacture}">2022</span></p>
+    <p><strong>Phone Number:</strong> <span th:text="${listing.phoneNumber}">555-1234</span></p>
+    <p><strong>Created At:</strong>
       <span th:text="${#temporals.format(listing.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</span>
     </p>
   </div>
@@ -49,20 +30,10 @@
   <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
     <h3>Car Details</h3>
-
     <div th:if="${listing.car != null}">
-      <p>
-        <strong>Make:</strong>
-        <span th:text="${listing.car.make}">Toyota</span>
-      </p>
-      <p>
-        <strong>Model:</strong>
-        <span th:text="${listing.car.model}">Corolla</span>
-      </p>
-      <p>
-        <strong>Car Type:</strong>
-        <span th:text="${listing.car.carType}">SEDAN</span>
-      </p>
+      <p><strong>Make:</strong> <span th:text="${listing.car.make}">Toyota</span></p>
+      <p><strong>Model:</strong> <span th:text="${listing.car.model}">Corolla</span></p>
+      <p><strong>Car Type:</strong> <span th:text="${listing.car.carType}">SEDAN</span></p>
     </div>
     <div th:if="${listing.car == null}">
       <p>No car details provided.</p>
@@ -76,8 +47,15 @@
     <div th:if="${#lists.isEmpty(listing.images)}">
       <p>No images available.</p>
     </div>
-    <div th:each="img : ${listing.images}">
-      <img th:src="${img.url}" alt="Car Image" style="max-width: 300px; margin: 0.5rem 1rem 0.5rem 0;">
+
+    <div class="images-grid" th:unless="${#lists.isEmpty(listing.images)}">
+      <div class="image-card" th:each="img : ${listing.images}">
+        <img th:src="${img.url}" alt="Car Image">
+      </div>
+    </div>
+
+    <div th:if="${user != null and listing.owner != null and listing.owner.id == user.id}" style="margin-top: 1rem;">
+      <a class="cta-btn" th:href="@{'/images/add?listingId=' + ${listing.id}}">Add Image</a>
     </div>
   </div>
 

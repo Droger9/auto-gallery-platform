@@ -47,6 +47,7 @@ public class Listing {
     private Car car;
 
     @OneToMany(mappedBy = "listing",  fetch = FetchType.EAGER)
+    @OrderBy("creationDate ASC")
     private List<Image> images = new ArrayList<>();
 
     @ManyToOne

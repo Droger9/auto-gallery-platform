@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Image</title>
+  <link rel="stylesheet" th:href="@{/css/modern.css}">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header-fragment"></div>
+
+<main class="container" style="margin-top:100px;">
+  <h2>Add Image</h2>
+  <form th:action="@{/images/add}" method="post" th:object="${imageDto}">
+    <input type="hidden" name="listingId" th:value="${listingId}"/>
+
+    <div class="form-group">
+      <label for="url">Image URL:</label>
+      <input type="text" id="url" th:field="*{url}" placeholder="http://example.com/image.jpg" required>
+      <div th:if="${#fields.hasErrors('url')}" class="error">
+        <p th:errors="*{url}"></p>
+      </div>
+    </div>
+
+    <button type="submit" class="cta-btn">Add Image</button>
+  </form>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>
