@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" th:href="@{/css/modern.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header-fragment"></div>
+
+<main class="container" style="margin-top:100px;">
+    <h2>Your Profile</h2>
+
+    <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); max-width: 600px; margin: 2rem auto;">
+
+        <h3>Account Information</h3>
+        <p>
+            <strong>Username:</strong>
+            <span th:text="${user.username}">user123</span>
+        </p>
+        <p>
+            <strong>Email:</strong>
+            <span th:text="${user.email}">user@example.com</span>
+        </p>
+        <p>
+            <strong>Role:</strong>
+            <span th:text="${user.role}">USER</span>
+        </p>
+    </div>
+
+    <section style="margin: 2rem 0;">
+        <h3>Your Listings</h3>
+        <div th:if="${#lists.isEmpty(userListings)}">
+            <p>You haven't created any listings yet.</p>
+        </div>
+        <div class="listing-items" th:unless="${#lists.isEmpty(userListings)}">
+            <div class="listing-card" th:each="listing : ${userListings}">
+                <div class="listing-image">
+                    <img th:src="${#lists.isEmpty(listing.images)
+                                  ? '/images/placeholder.jpg'
+                                  : listing.images.get(0).url}"
+                         alt="Car Image">
+                </div>
+                <div class="listing-details" style="padding: 1rem;">
+                    <h4 th:text="${listing.title}">Listing Title</h4>
+                    <p th:text="'Price: $' + ${listing.price}">Price</p>
+                    <p th:text="'Year: ' + ${listing.yearOfManufacture}">Year</p>
+                    <div class="listing-actions">
+                        <a class="cta-btn" th:href="@{'/listings/' + ${listing.id}}">View More Details</a>
+                        <form th:action="@{'/listings/' + ${listing.id}}" method="post" style="display:inline;">
+                            <!-- Hidden field to tell Spring we want to DELETE -->
+                            <input type="hidden" name="_method" value="delete"/>
+                            <button type="submit" class="delete-btn">Delete Listing</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="margin: 2rem 0;">
+        <h3>Your Bookmarked Listings</h3>
+        <div th:if="${#lists.isEmpty(bookmarkedListings)}">
+            <p>You haven't bookmarked any listings yet.</p>
+        </div>
+        <div class="listing-items" th:unless="${#lists.isEmpty(bookmarkedListings)}">
+            <div class="listing-card" th:each="listing : ${bookmarkedListings}">
+                <div class="listing-image">
+                    <img th:src="${#lists.isEmpty(listing.images)
+                                  ? '/images/placeholder.jpg'
+                                  : listing.images.get(0).url}"
+                         alt="Car Image">
+                </div>
+                <div class="listing-details" style="padding: 1rem;">
+                    <h4 th:text="${listing.title}">Listing Title</h4>
+                    <p th:text="'Price: $' + ${listing.price}">Price</p>
+                    <p th:text="'Year: ' + ${listing.yearOfManufacture}">Year</p>
+                    <div class="listing-actions">
+                        <a class="cta-btn" th:href="@{'/listings/' + ${listing.id}}">View More Details</a>
+                        <a class="bookmark-btn" th:href="@{'/bookmarks/remove/' + ${listing.id}}">Remove Bookmark</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -37,4 +37,8 @@ public class User {
 
     @OneToMany (mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Listing> listing = new ArrayList<>();
+
+
+    @ManyToMany
+    private List<Listing> bookmarkedListings = new ArrayList<>();
 }

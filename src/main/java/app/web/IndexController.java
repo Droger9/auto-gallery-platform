@@ -1,7 +1,9 @@
 package app.web;
 
+import app.model.Listing;
 import app.model.User;
 import app.security.AuthenticationMetadata;
+import app.service.ListingService;
 import app.service.UserService;
 import app.web.dto.LoginRequest;
 import app.web.dto.RegisterRequest;
@@ -15,14 +17,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class IndexController {
 
     private final UserService userService;
+    private final ListingService listingService;
 
     @Autowired
-    public IndexController(UserService userService) {
+    public IndexController(UserService userService, ListingService listingService) {
         this.userService = userService;
+        this.listingService = listingService;
     }
 
 
@@ -72,9 +78,12 @@ public class IndexController {
 
         User user = userService.getById(authenticationMetadata.getUserId());
 
+        List<Listing> allListings = listingService.getAll();
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");
         modelAndView.addObject("user", user);
+        modelAndView.addObject("allListings", allListings);
 
         return modelAndView;
     }

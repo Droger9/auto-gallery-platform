@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Listing Details</title>
+  <link rel="stylesheet" th:href="@{/css/modern.css}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header-fragment"></div>
+
+<main class="container" style="margin-top:100px;">
+  <h2>Listing Details</h2>
+
+  <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
+         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
+
+    <h3 th:text="${listing.title}">Sample Title</h3>
+
+    <p>
+      <strong>Price:</strong>
+      <span th:text="${listing.price}">1234</span>
+    </p>
+
+    <p>
+      <strong>Color:</strong>
+      <span th:text="${listing.color}">Black</span>
+    </p>
+
+    <p>
+      <strong>Year of Manufacture:</strong>
+      <span th:text="${listing.yearOfManufacture}">2022</span>
+    </p>
+
+    <p>
+      <strong>Phone Number:</strong>
+      <span th:text="${listing.phoneNumber}">555-1234</span>
+    </p>
+
+    <p>
+      <strong>Created At:</strong>
+      <span th:text="${#temporals.format(listing.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</span>
+    </p>
+  </div>
+
+  <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
+         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
+    <h3>Car Details</h3>
+
+    <div th:if="${listing.car != null}">
+      <p>
+        <strong>Make:</strong>
+        <span th:text="${listing.car.make}">Toyota</span>
+      </p>
+      <p>
+        <strong>Model:</strong>
+        <span th:text="${listing.car.model}">Corolla</span>
+      </p>
+      <p>
+        <strong>Car Type:</strong>
+        <span th:text="${listing.car.carType}">SEDAN</span>
+      </p>
+    </div>
+    <div th:if="${listing.car == null}">
+      <p>No car details provided.</p>
+    </div>
+  </div>
+
+  <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
+         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+    <h3>Images</h3>
+
+    <div th:if="${#lists.isEmpty(listing.images)}">
+      <p>No images available.</p>
+    </div>
+    <div th:each="img : ${listing.images}">
+      <img th:src="${img.url}" alt="Car Image" style="max-width: 300px; margin: 0.5rem 1rem 0.5rem 0;">
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 2rem;">
+    <a class="cta-btn" th:href="@{/home}">Back to Listings</a>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+  </div>
+</footer>
+
+</body>
+</html>

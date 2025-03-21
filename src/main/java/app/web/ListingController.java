@@ -1,5 +1,6 @@
 package app.web;
 
+import app.model.Car;
 import app.model.Listing;
 import app.model.User;
 import app.security.AuthenticationMetadata;
@@ -13,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.nio.file.AccessDeniedException;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/listings")
@@ -65,5 +67,36 @@ public class ListingController {
         imageService.createImage(createNewListing, listing);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/{id}")
+    public ModelAndView showListingDetails(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+
+        Listing listing = listingService.getListingById(id);
+        User user = userService.getById(authenticationMetadata.getUserId());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("listing-details");
+        modelAndView.addObject("listing", listing);
+        modelAndView.addObject("user", user);
+
+
+        return modelAndView;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteListing(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
+
+        Listing listing = listingService.getListingById(id);
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        if (!listing.getOwner().getId().equals(user.getId())) {
+
+            throw new AccessDeniedException("You do not own this listing.");
+        }
+
+        listingService.deleteListing(id);
+
+        return "redirect:/profile";
     }
 }

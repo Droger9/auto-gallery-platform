@@ -1,4 +1,4 @@
-
+<!-- fragments/header.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -10,7 +10,8 @@
   <header class="navbar">
     <div class="container">
       <div class="logo">
-        <a th:href="@{/}">AutoGallery</a>
+        <a th:if="${user}" th:href="@{/home}">AutoGallery</a>
+        <a th:unless="${user}" th:href="@{/}">AutoGallery</a>
       </div>
       <nav>
         <ul>
@@ -23,6 +24,10 @@
           </li>
           <li th:unless="${user}">
             <a th:href="@{/register}">Register</a>
+          </li>
+
+          <li th:if="${user}">
+            <a th:href="@{/profile}">Profile</a>
           </li>
 
           <li th:if="${user}">

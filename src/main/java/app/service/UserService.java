@@ -1,6 +1,7 @@
 package app.service;
 
 import app.exception.UsernameAlreadyExistException;
+import app.model.Listing;
 import app.model.Role;
 import app.model.User;
 import app.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,5 +65,18 @@ public class UserService implements UserDetailsService {
     public User getById(UUID userId) {
 
         return userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+    }
+
+    public User findByUsername(String username) {
+
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+    }
+
+    public List<Listing> findBookmarkedListings(User user) {
+        return user.getBookmarkedListings();
+    }
+
+    public void save(User user) {
+        userRepository.save(user);
     }
 }
