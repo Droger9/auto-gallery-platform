@@ -1,9 +1,6 @@
 package app.web;
 
-import app.model.Car;
-import app.model.Image;
-import app.model.Listing;
-import app.model.User;
+import app.model.*;
 import app.security.AuthenticationMetadata;
 import app.service.CarService;
 import app.service.ImageService;
@@ -93,11 +90,14 @@ public class ListingController {
     public String deleteListing(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
 
         Listing listing = listingService.getListingById(id);
+        User user = userService.getById(authenticationMetadata.getUserId());
 
-        User user = userService.findByUsername(authenticationMetadata.getUsername());
-        if (!listing.getOwner().getId().equals(user.getId())) {
 
-            throw new AccessDeniedException("You do not own this listing.");
+        boolean isOwner = (listing.getOwner() != null && listing.getOwner().getId().equals(user.getId()));
+        boolean isAdmin = (user.getRole() == Role.ADMIN);
+
+        if (!isOwner && !isAdmin) {
+            throw new AccessDeniedException("You are not authorized to delete this listing.");
         }
 
         listingService.deleteListing(id);

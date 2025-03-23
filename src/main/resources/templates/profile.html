@@ -56,10 +56,6 @@
                     <p th:text="'Year: ' + ${listing.yearOfManufacture}">Year</p>
                     <div class="listing-actions">
                         <a class="cta-btn" th:href="@{'/listings/' + ${listing.id}}">View More Details</a>
-                        <form th:action="@{'/listings/' + ${listing.id}}" method="post" style="display:inline;">
-                            <input type="hidden" name="_method" value="delete"/>
-                            <button type="submit" class="delete-btn">Delete Listing</button>
-                        </form>
                     </div>
                 </div>
             </div>

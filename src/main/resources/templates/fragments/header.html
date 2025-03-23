@@ -18,6 +18,9 @@
           <li th:if="${user}">
             <a th:href="@{/home}">Home</a>
           </li>
+          <li th:if="${user != null and user.role == T(app.model.Role).ADMIN}">
+            <a th:href="@{/admin/users}">Users</a>
+          </li>
 
           <li th:unless="${user}">
             <a th:href="@{/login}">Login</a>

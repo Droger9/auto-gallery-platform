@@ -1,5 +1,6 @@
 package app.service;
 
+import app.exception.UserDoesNotExist;
 import app.exception.UsernameAlreadyExistException;
 import app.model.Listing;
 import app.model.Role;
@@ -7,7 +8,6 @@ import app.model.User;
 import app.repository.UserRepository;
 import app.security.AuthenticationMetadata;
 import app.web.dto.RegisterRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -77,6 +77,18 @@ public class UserService implements UserDetailsService {
     }
 
     public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public List<User> findAllByRole(Role role) {
+        return userRepository.findAllByRole(role);
+    }
+
+    public void promoteToAdmin(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserDoesNotExist("User not found"));
+
+        user.setRole(Role.ADMIN);
         userRepository.save(user);
     }
 }

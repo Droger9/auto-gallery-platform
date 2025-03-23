@@ -62,6 +62,14 @@
       </div>
     </div>
   </div>
+  <div th:if="${user != null && (user.role == T(app.model.Role).ADMIN
+        || (listing.owner != null && listing.owner.id == user.id))}"
+       style="margin-top: 1rem;">
+    <form th:action="@{'/listings/' + ${listing.id}}" method="post" style="display:inline;">
+      <input type="hidden" name="_method" value="delete"/>
+      <button type="submit" class="delete-btn">Delete Listing</button>
+    </form>
+  </div>
 
 
 

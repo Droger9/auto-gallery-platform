@@ -418,3 +418,35 @@ footer {
     border-radius: 4px;
 }
 
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.admin-table thead {
+    background: #333;
+    color: #fff;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.admin-table th {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.admin-table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.admin-table td button.cta-btn {
+    margin: 0;
+}
+

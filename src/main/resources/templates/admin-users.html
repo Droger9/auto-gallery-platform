@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users</title>
+    <link rel="stylesheet" th:href="@{/css/modern.css}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Common header fragment -->
+<div th:replace="fragments/header :: header-fragment"></div>
+
+<main class="container" style="margin-top: 100px;">
+    <h2>Manage Users</h2>
+
+    <!-- If no non-admin users are found -->
+    <div th:if="${#lists.isEmpty(nonAdminUsers)}" class="form-container"
+         style="background: #fff; padding: 2rem; border-radius: 10px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); max-width: 600px; margin: 2rem auto;">
+        <p>No non-admin users found.</p>
+    </div>
+
+    <!-- Table of non-admin users -->
+    <div th:unless="${#lists.isEmpty(nonAdminUsers)}" class="form-container"
+         style="background: #fff; padding: 2rem; border-radius: 10px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin: 2rem auto;">
+
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="usr : ${nonAdminUsers}">
+                <td th:text="${usr.username}">username</td>
+                <td th:text="${usr.email}">email@example.com</td>
+                <td style="text-align: center;">
+                    <!-- "Make Admin" form -->
+                    <form th:action="@{'/admin/users/' + ${usr.id} + '/makeAdmin'}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit" class="cta-btn">Make Admin</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
