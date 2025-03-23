@@ -1,5 +1,6 @@
 package app.service;
 
+import app.exception.ImageDoesNotExist;
 import app.model.Image;
 import app.model.Listing;
 import app.model.User;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
+import java.util.UUID;
 
 @Service
 public class ImageService {
@@ -48,5 +50,14 @@ public class ImageService {
         if (!listing.getOwner().getId().equals(user.getId())) {
             throw new AccessDeniedException("You do not own this listing.");
         }
+    }
+
+
+    public Image findById(UUID imageId) {
+        return imageRepository.findById(imageId).orElseThrow(() -> new ImageDoesNotExist("Image not found"));
+    }
+
+    public void deleteImage(UUID imageId) {
+        imageRepository.deleteById(imageId);
     }
 }

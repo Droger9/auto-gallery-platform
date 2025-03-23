@@ -4,7 +4,7 @@ import app.model.Car;
 import app.model.Listing;
 import app.repository.CarRepository;
 import app.web.dto.CreateNewListing;
-import jakarta.validation.Valid;
+import app.web.dto.ListingCarDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,4 +28,11 @@ public class CarService {
         return carRepository.save(car);
     }
 
+    public void updateCar(ListingCarDto dto, Listing listing) {
+        Car car = listing.getCar();
+        car.setMake(dto.getMake());
+        car.setModel(dto.getModel());
+        car.setCarType(dto.getCarType());
+        carRepository.save(car);
+    }
 }

@@ -20,7 +20,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/images")
+@RequestMapping("/image")
 public class ImageController {
 
     private final ImageService imageService;
@@ -72,6 +72,26 @@ public class ImageController {
         modelAndView.setViewName("redirect:/listings/" + listingId);
         
         return modelAndView;
+    }
+
+    @DeleteMapping("/{imageId}")
+    public String deleteImage(@PathVariable UUID imageId,@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
+
+        Image image = imageService.findById(imageId);
+
+        Listing listing = image.getListing();
+        if (listing == null) {
+            throw new IllegalStateException("Image not attached to a listing");
+        }
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        if (!listing.getOwner().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You do not own this listing.");
+        }
+
+        imageService.deleteImage(imageId);
+
+        return "redirect:/listings/edit/" + listing.getId();
     }
 
 }

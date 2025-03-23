@@ -55,9 +55,15 @@
     </div>
 
     <div th:if="${user != null and listing.owner != null and listing.owner.id == user.id}" style="margin-top: 1rem;">
-      <a class="cta-btn" th:href="@{'/images/add?listingId=' + ${listing.id}}">Add Image</a>
+      <a class="cta-btn" th:href="@{'/image/add?listingId=' + ${listing.id}}">Add Image</a>
+      <div th:if="${user != null and listing.owner != null and listing.owner.id == user.id}"
+           style="margin-top: 1rem; text-align: center;">
+        <a class="cta-btn" th:href="@{'/listings/edit/' + ${listing.id}}">Edit Listing</a>
+      </div>
     </div>
   </div>
+
+
 
   <div style="text-align: center; margin-top: 2rem;">
     <a class="cta-btn" th:href="@{/home}">Back to Listings</a>

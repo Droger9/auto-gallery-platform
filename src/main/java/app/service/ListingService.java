@@ -4,6 +4,7 @@ import app.model.Listing;
 import app.model.User;
 import app.repository.ListingRepository;
 import app.web.dto.CreateNewListing;
+import app.web.dto.ListingCarDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,14 @@ public class ListingService {
          listing.setDeleted(true);
          listingRepository.save(listing);
 
+    }
+
+    public void updateListing(ListingCarDto dto, Listing listing) {
+        listing.setTitle(dto.getTitle());
+        listing.setPhoneNumber(dto.getPhoneNumber());
+        listing.setPrice(dto.getPrice());
+        listing.setColor(dto.getColor());
+        listing.setYearOfManufacture(dto.getYearOfManufacture());
+        listingRepository.save(listing);
     }
 }

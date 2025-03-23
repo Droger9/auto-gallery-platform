@@ -1,6 +1,7 @@
 package app.web;
 
 import app.model.Car;
+import app.model.Image;
 import app.model.Listing;
 import app.model.User;
 import app.security.AuthenticationMetadata;
@@ -9,6 +10,7 @@ import app.service.ImageService;
 import app.service.ListingService;
 import app.service.UserService;
 import app.web.dto.CreateNewListing;
+import app.web.dto.ListingCarDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.UUID;
+
+import static app.web.mapper.DtoMapper.mapListingToListingCarDto;
 
 @Controller
 @RequestMapping("/listings")
@@ -99,4 +104,53 @@ public class ListingController {
 
         return "redirect:/profile";
     }
+
+    @GetMapping("/edit/{id}")
+    public ModelAndView showEditListingForm(@PathVariable UUID id,@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("edit-listing");
+        Listing listing = listingService.getListingById(id);
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        if (!listing.getOwner().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You do not own this listing.");
+        }
+
+        ListingCarDto dto = mapListingToListingCarDto(listing);
+
+        List<Image> images = listing.getImages();
+
+        modelAndView.addObject("listingCarDto", dto);
+        modelAndView.addObject("images", images);
+        modelAndView.addObject("user", user);
+
+        return modelAndView;
+    }
+
+
+    @PostMapping("/edit")
+    public ModelAndView editListing(@Valid ListingCarDto dto, BindingResult bindingResult, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
+
+        ModelAndView modelAndView = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("edit-listing");
+            return modelAndView;
+        }
+
+        Listing listing = listingService.getListingById(UUID.fromString(dto.getListingId()));
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        if (!listing.getOwner().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You do not own this listing.");
+        }
+
+        listingService.updateListing(dto, listing);
+        carService.updateCar(dto, listing);
+
+        modelAndView.setViewName("redirect:/listings/" + dto.getListingId());
+        return modelAndView;
+    }
+
+
 }
