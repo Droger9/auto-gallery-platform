@@ -33,6 +33,10 @@
         </p>
     </div>
 
+    <div style="text-align: center; margin: 2rem;">
+        <a class="cta-btn" th:href="@{/profile/edit}">Edit Profile</a>
+    </div>
+
     <section style="margin: 2rem 0;">
         <h3>Your Listings</h3>
         <div th:if="${#lists.isEmpty(userListings)}">
