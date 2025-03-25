@@ -450,3 +450,33 @@ footer {
     margin: 0;
 }
 
+.error-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-content {
+    text-align: center;
+    background: #fff;
+    padding: 2rem 3rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.error-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+

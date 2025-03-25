@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ModelAndView showUserProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView showUserProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws MissingRequestValueException {
 
         User user = userService.findByUsername(authenticationMetadata.getUsername());
 

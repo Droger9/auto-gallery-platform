@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${errorTitle}">Error</title>
+    <link rel="stylesheet" th:href="@{/css/modern.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header-fragment"></div>
+
+<main class="container error-page">
+    <div class="error-content">
+        <h1 class="error-title" th:text="${errorTitle}">An Error Occurred</h1>
+        <p class="error-message" th:text="${errorMessage}">
+            Something went wrong.
+        </p>
+        <a class="cta-btn" th:href="@{/home}">Return Home</a>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 Auto Gallery Platform. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

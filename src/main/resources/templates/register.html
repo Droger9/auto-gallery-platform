@@ -24,6 +24,8 @@
                 <div th:if="${#fields.hasErrors('username')}">
                     <p class="error" th:errors="*{username}"></p>
                 </div>
+                <p class="error" th:text="${usernameAlreadyExistMessage}"></p>
+
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
