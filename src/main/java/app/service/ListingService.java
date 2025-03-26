@@ -68,6 +68,7 @@ public class ListingService {
         listing.setPrice(dto.getPrice());
         listing.setColor(dto.getColor());
         listing.setYearOfManufacture(dto.getYearOfManufacture());
+        listing.setUpdatedAt(LocalDateTime.now());
         listingRepository.save(listing);
     }
 }
