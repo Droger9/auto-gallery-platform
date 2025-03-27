@@ -91,4 +91,9 @@ public class UserService implements UserDetailsService {
         user.setRole(Role.ADMIN);
         userRepository.save(user);
     }
+
+    public User findById(UUID reviewerId) {
+        return  userRepository.findById(reviewerId)
+                .orElseThrow(() -> new UserDoesNotExist("User not found"));
+    }
 }

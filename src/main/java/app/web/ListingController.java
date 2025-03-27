@@ -1,6 +1,10 @@
 package app.web;
 
 import app.model.*;
+import app.review.client.ReviewClient;
+import app.review.client.dto.CreateReviewRequestDto;
+import app.review.client.dto.ReviewDto;
+import app.review.service.ReviewService;
 import app.security.AuthenticationMetadata;
 import app.service.CarService;
 import app.service.ImageService;
@@ -30,13 +34,15 @@ public class ListingController {
     private final ListingService listingService;
     private final CarService carService;
     private final ImageService imageService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public ListingController(UserService userService, ListingService listingService, CarService carService, ImageService imageService) {
+    public ListingController(UserService userService, ListingService listingService, CarService carService, ImageService imageService, ReviewClient reviewClient, ReviewService reviewService) {
         this.userService = userService;
         this.listingService = listingService;
         this.carService = carService;
         this.imageService = imageService;
+        this.reviewService = reviewService;
     }
 
 
@@ -76,15 +82,21 @@ public class ListingController {
 
         Listing listing = listingService.getListingById(id);
         User user = userService.getById(authenticationMetadata.getUserId());
+        List<ReviewDto> reviews = reviewService.getReviewDtos(id);
+
+        reviewService.addUsernameToDtos(reviews);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("listing-details");
         modelAndView.addObject("listing", listing);
         modelAndView.addObject("user", user);
+        modelAndView.addObject("reviews", reviews);
 
 
         return modelAndView;
     }
+
+
 
     @DeleteMapping("/{id}")
     public String deleteListing(@PathVariable UUID id, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
@@ -150,6 +162,32 @@ public class ListingController {
 
         modelAndView.setViewName("redirect:/listings/" + dto.getListingId());
         return modelAndView;
+    }
+
+    @PostMapping("/{id}/reviews/add")
+    public String addReview(@PathVariable UUID id, @RequestParam String content,@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+
+        CreateReviewRequestDto requestDto = reviewService.getCreateReviewRequestDto(id, content, user);
+
+        reviewService.createReview(requestDto);
+
+        return "redirect:/listings/" + id;
+    }
+
+
+
+    @DeleteMapping("/reviews/{reviewId}")
+    public String deleteReview(@PathVariable UUID reviewId, @RequestParam UUID listingId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        boolean isAdmin = (user.getRole() == Role.ADMIN);
+
+        reviewService.deleteReview(reviewId, user.getId(), isAdmin);
+
+        return "redirect:/listings/" + listingId;
     }
 
 

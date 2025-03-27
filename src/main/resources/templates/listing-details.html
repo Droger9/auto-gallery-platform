@@ -16,7 +16,7 @@
   <h2>Listing Details</h2>
 
   <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
-         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
     <h3 th:text="${listing.title}">Sample Title</h3>
     <p><strong>Price:</strong> <span th:text="${listing.price}">1234</span></p>
     <p><strong>Color:</strong> <span th:text="${listing.color}">Black</span></p>
@@ -28,7 +28,7 @@
   </div>
 
   <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
-         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin-bottom: 2rem;">
     <h3>Car Details</h3>
     <div th:if="${listing.car != null}">
       <p><strong>Make:</strong> <span th:text="${listing.car.make}">Toyota</span></p>
@@ -41,7 +41,7 @@
   </div>
 
   <div class="form-container" style="background: #fff; padding: 2rem; border-radius: 10px;
-         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
+       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);">
     <h3>Images</h3>
 
     <div th:if="${#lists.isEmpty(listing.images)}">
@@ -62,6 +62,45 @@
       </div>
     </div>
   </div>
+
+  <div class="form-container reviews-section" style="margin-top: 2rem;">
+    <h3>Reviews</h3>
+
+    <div th:if="${#lists.isEmpty(reviews)}">
+      <p>No reviews yet.</p>
+    </div>
+
+    <div class="review-cards" th:unless="${#lists.isEmpty(reviews)}">
+      <div class="review-card" th:each="review : ${reviews}">
+        <p class="review-content" th:text="${review.content}">Sample review content</p>
+        <p class="review-meta">
+          Posted on
+          <span th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</span>
+          by
+          <span th:text="${review.username}">username</span>
+        </p>
+        <div class="review-actions" th:if="${user != null}">
+          <div th:if="${user.username == review.username || user.role == T(app.model.Role).ADMIN}">
+            <form th:action="@{'/listings/reviews/' + ${review.id}}" method="post" style="display:inline;">
+              <input type="hidden" name="_method" value="delete"/>
+              <input type="hidden" name="listingId" th:value="${listing.id}"/>
+              <button type="submit" class="delete-btn">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-review-form" th:if="${user != null}" style="margin-top: 1rem;">
+      <h4>Add a Review</h4>
+      <form th:action="@{'/listings/' + ${listing.id} + '/reviews/add'}" method="post">
+        <textarea name="content" rows="3" cols="50" placeholder="Write your review..." required></textarea>
+        <br/>
+        <button type="submit" class="cta-btn" style="margin-top: 0.5rem;">Add Review</button>
+      </form>
+    </div>
+  </div>
+
   <div th:if="${user != null && (user.role == T(app.model.Role).ADMIN
         || (listing.owner != null && listing.owner.id == user.id))}"
        style="margin-top: 1rem;">
@@ -70,8 +109,6 @@
       <button type="submit" class="delete-btn">Delete Listing</button>
     </form>
   </div>
-
-
 
   <div style="text-align: center; margin-top: 2rem;">
     <a class="cta-btn" th:href="@{/home}">Back to Listings</a>
