@@ -29,24 +29,25 @@ public class BookmarkController {
     public String addBookmark(@PathVariable UUID listingId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.findByUsername(authenticationMetadata.getUsername());
-
         Listing listing = listingService.getListingById(listingId);
 
-        user.getBookmarkedListings().add(listing);
-
-        userService.save(user);
+        listingService.bookmarkListing(user, listing);
 
         return "redirect:/home";
     }
 
+
+
     @GetMapping("/remove/{listingId}")
     public String removeBookmark(@PathVariable UUID listingId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+
         User user = userService.findByUsername(authenticationMetadata.getUsername());
         Listing listing = listingService.getListingById(listingId);
 
-        user.getBookmarkedListings().remove(listing);
-        userService.save(user);
+        listingService.removeBookmarkedListing(user, listing);
 
         return "redirect:/profile";
     }
+
+
 }

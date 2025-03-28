@@ -2,7 +2,9 @@ package app.web.mapper;
 
 
 import app.model.Listing;
+import app.model.User;
 import app.web.dto.ListingCarDto;
+import app.web.dto.UserEditRequest;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -22,4 +24,10 @@ public class DtoMapper {
                 .build();
     }
 
+    public static UserEditRequest mapUserToUserEditRequest(User user) {
+
+        return UserEditRequest.builder()
+                .email(user.getEmail())
+                .build();
+    }
 }

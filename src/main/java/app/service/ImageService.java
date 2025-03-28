@@ -57,7 +57,12 @@ public class ImageService {
         return imageRepository.findById(imageId).orElseThrow(() -> new ImageDoesNotExist("Image not found"));
     }
 
-    public void deleteImage(UUID imageId) {
+    public void deleteImage(UUID imageId, Listing listing, User user) throws AccessDeniedException {
+
+        if (!listing.getOwner().getId().equals(user.getId())) {
+            throw new AccessDeniedException("You do not own this listing.");
+        }
+
         imageRepository.deleteById(imageId);
     }
 }

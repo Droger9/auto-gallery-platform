@@ -51,7 +51,6 @@ public class ListingController {
 
         User user = userService.getById(authenticationMetadata.getUserId());
 
-
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("add-listing");
         modelAndView.addObject("createNewListing", new CreateNewListing());
@@ -84,7 +83,7 @@ public class ListingController {
         User user = userService.getById(authenticationMetadata.getUserId());
         List<ReviewDto> reviews = reviewService.getReviewDtos(id);
 
-        reviewService.addUsernameToDtos(reviews);
+        reviewService.addUsernameToDto(reviews);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("listing-details");
@@ -104,15 +103,7 @@ public class ListingController {
         Listing listing = listingService.getListingById(id);
         User user = userService.getById(authenticationMetadata.getUserId());
 
-
-        boolean isOwner = (listing.getOwner() != null && listing.getOwner().getId().equals(user.getId()));
-        boolean isAdmin = (user.getRole() == Role.ADMIN);
-
-        if (!isOwner && !isAdmin) {
-            throw new AccessDeniedException("You are not authorized to delete this listing.");
-        }
-
-        listingService.deleteListing(id);
+        listingService.deleteListing(id, listing, user);
 
         return "redirect:/profile";
     }
@@ -120,17 +111,12 @@ public class ListingController {
     @GetMapping("/edit/{id}")
     public ModelAndView showEditListingForm(@PathVariable UUID id,@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws AccessDeniedException {
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("edit-listing");
-        Listing listing = listingService.getListingById(id);
+        ModelAndView modelAndView = new ModelAndView("edit-listing");
 
         User user = userService.findByUsername(authenticationMetadata.getUsername());
-        if (!listing.getOwner().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You do not own this listing.");
-        }
+        Listing listing = listingService.getListingIfOwned(id,user);
 
         ListingCarDto dto = mapListingToListingCarDto(listing);
-
         List<Image> images = listing.getImages();
 
         modelAndView.addObject("listingCarDto", dto);
@@ -150,12 +136,8 @@ public class ListingController {
             return modelAndView;
         }
 
-        Listing listing = listingService.getListingById(UUID.fromString(dto.getListingId()));
-
         User user = userService.findByUsername(authenticationMetadata.getUsername());
-        if (!listing.getOwner().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You do not own this listing.");
-        }
+        Listing listing = listingService.getListingIfOwned(UUID.fromString(dto.getListingId()), user);
 
         listingService.updateListing(dto, listing);
         carService.updateCar(dto, listing);
@@ -169,7 +151,6 @@ public class ListingController {
 
 
         User user = userService.findByUsername(authenticationMetadata.getUsername());
-
         CreateReviewRequestDto requestDto = reviewService.getCreateReviewRequestDto(id, content, user);
 
         reviewService.createReview(requestDto);
@@ -183,9 +164,8 @@ public class ListingController {
     public String deleteReview(@PathVariable UUID reviewId, @RequestParam UUID listingId, @AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.findByUsername(authenticationMetadata.getUsername());
-        boolean isAdmin = (user.getRole() == Role.ADMIN);
 
-        reviewService.deleteReview(reviewId, user.getId(), isAdmin);
+        reviewService.deleteReview(reviewId, user);
 
         return "redirect:/listings/" + listingId;
     }

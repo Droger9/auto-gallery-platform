@@ -6,15 +6,14 @@ import app.security.AuthenticationMetadata;
 import app.service.ListingService;
 import app.service.UserService;
 import app.web.dto.UserEditRequest;
+import app.web.mapper.DtoMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MissingRequestValueException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -34,15 +33,12 @@ public class UserController {
     @GetMapping("/profile")
     public ModelAndView showUserProfile(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) throws MissingRequestValueException {
 
-        User user = userService.findByUsername(authenticationMetadata.getUsername());
-
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("profile");
 
+        User user = userService.findByUsername(authenticationMetadata.getUsername());
         List<Listing> userListings = listingService.findAllByOwner(user);
-
         List<Listing> bookmarkedListings = userService.findBookmarkedListings(user);
-
 
         modelAndView.addObject("user", user);
         modelAndView.addObject("userListings", userListings);
@@ -54,15 +50,11 @@ public class UserController {
     @GetMapping("/profile/edit")
     public ModelAndView showEditProfileForm(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
+        User user = userService.getById(authenticationMetadata.getUserId());
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("edit-profile");
-
-        User user = userService.findByUsername(authenticationMetadata.getUsername());
-
-        UserEditRequest userEditRequest = new UserEditRequest();
-        userEditRequest.setEmail(user.getEmail());
-
-        modelAndView.addObject("userEditRequest", userEditRequest);
+        modelAndView.addObject("userEditRequest", DtoMapper.mapUserToUserEditRequest(user));
         modelAndView.addObject("user", user);
 
         return modelAndView;
@@ -80,12 +72,9 @@ public class UserController {
             return modelAndView;
         }
 
-
-        User user = userService.findByUsername(authenticationMetadata.getUsername());
-
-        user.setEmail(userEditRequest.getEmail());
-        userService.save(user);
+        userService.editUserDetails(userEditRequest, authenticationMetadata);
 
         return new ModelAndView("redirect:/profile");
     }
+
 }

@@ -1,5 +1,6 @@
 package app.review.service;
 
+import app.model.Role;
 import app.model.User;
 import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
@@ -44,15 +45,18 @@ public class ReviewService {
         reviewClient.createReview(requestDto);
     }
 
-    public void deleteReview(UUID reviewId, UUID id, boolean isAdmin) {
-        reviewClient.deleteReview(reviewId, id, isAdmin);
+    public void deleteReview(UUID reviewId, User user) {
+
+        boolean isAdmin = (user.getRole() == Role.ADMIN);
+        reviewClient.deleteReview(reviewId, user.getId(), isAdmin);
+
     }
 
-    public void addUsernameToDtos(List<ReviewDto> reviews) {
-        for (ReviewDto review : reviews) {
-            UUID reviewerId = review.getUserId();
+    public void addUsernameToDto(List<ReviewDto> reviews) {
 
-            User user = userService.findById(reviewerId);
+        for (ReviewDto review : reviews) {
+
+            User user = userService.getById(review.getUserId());
 
             if (user != null) {
                 review.setUsername(user.getUsername());

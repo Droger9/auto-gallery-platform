@@ -8,6 +8,7 @@ import app.model.User;
 import app.repository.UserRepository;
 import app.security.AuthenticationMetadata;
 import app.web.dto.RegisterRequest;
+import app.web.dto.UserEditRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,8 +53,6 @@ public class UserService implements UserDetailsService {
     }
 
 
-
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -62,9 +61,11 @@ public class UserService implements UserDetailsService {
         return new AuthenticationMetadata(user.getId(),username, user.getPassword(),user.getRole());
     }
 
+
     public User getById(UUID userId) {
 
-        return userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserDoesNotExist("User with ID " + userId + " does not exist"));
     }
 
     public User findByUsername(String username) {
@@ -85,6 +86,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void promoteToAdmin(UUID userId) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserDoesNotExist("User not found"));
 
@@ -92,8 +94,10 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public User findById(UUID reviewerId) {
-        return  userRepository.findById(reviewerId)
-                .orElseThrow(() -> new UserDoesNotExist("User not found"));
+    public void editUserDetails(UserEditRequest userEditRequest, AuthenticationMetadata authenticationMetadata) {
+        User user = getById(authenticationMetadata.getUserId());
+        user.setEmail(userEditRequest.getEmail());
+        userRepository.save(user);
     }
+
 }
