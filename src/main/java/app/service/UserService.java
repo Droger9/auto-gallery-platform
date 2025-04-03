@@ -96,7 +96,11 @@ public class UserService implements UserDetailsService {
 
     public void editUserDetails(UserEditRequest userEditRequest, AuthenticationMetadata authenticationMetadata) {
         User user = getById(authenticationMetadata.getUserId());
-        user.setEmail(userEditRequest.getEmail());
+        String email = userEditRequest.getEmail();
+        if(email != null && email.trim().isEmpty()){
+            email = null;
+        }
+        user.setEmail(email);
         userRepository.save(user);
     }
 
