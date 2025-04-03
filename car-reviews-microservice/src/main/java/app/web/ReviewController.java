@@ -4,6 +4,8 @@ import app.model.Review;
 import app.service.ReviewService;
 import app.web.dto.CreateReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +32,11 @@ public class ReviewController {
     }
 
     @PostMapping
-    public Review createReview(@RequestBody CreateReviewRequest request) {
-
-        return reviewService.createReview(request.getListingId(), request.getUserId(), request.getContent());
-
+    public ResponseEntity<Review> createReview(@RequestBody CreateReviewRequest request) {
+        Review review = reviewService.createReview(request.getListingId(), request.getUserId(), request.getContent());
+        return ResponseEntity.status(HttpStatus.CREATED).body(review);
     }
+
 
     @DeleteMapping("/{reviewId}")
     public void deleteReview(@PathVariable UUID reviewId, @RequestParam UUID userId, @RequestParam boolean isAdmin) {
