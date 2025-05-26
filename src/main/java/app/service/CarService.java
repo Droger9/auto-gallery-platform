@@ -11,12 +11,20 @@ import app.web.dto.ListingCarDto;
 public interface CarService {
 
     /**
-     * Creates and saves a new car entity for the given listing.
+     * Creates a car associated with a listing
+     *
+     * @param createNewListing the listing creation data
+     * @param listing the listing to associate with the car
+     * @return the saved car
      */
     Car createCar(CreateNewListing createNewListing, Listing listing);
 
     /**
-     * Updates car details associated with a listing.
+     * Updates the car data associated with a listing
+     *
+     * @param dto the updated car data
+     * @param listing the listing whose car is to be updated
      */
     void updateCar(ListingCarDto dto, Listing listing);
 }
+

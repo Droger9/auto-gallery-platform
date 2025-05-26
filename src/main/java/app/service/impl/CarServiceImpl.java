@@ -1,8 +1,9 @@
-package app.service;
+package app.service.impl;
 
 import app.model.Car;
 import app.model.Listing;
 import app.repository.CarRepository;
+import app.service.CarService;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import org.springframework.stereotype.Service;

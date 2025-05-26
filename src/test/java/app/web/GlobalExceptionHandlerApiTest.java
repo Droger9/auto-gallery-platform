@@ -1,7 +1,7 @@
 package app.web;
 
 import app.security.AuthenticationMetadata;
-import app.service.UserServiceImpl;
+import app.service.impl.UserServiceImpl;
 import app.model.User;
 import app.model.Role;
 import org.junit.jupiter.api.Test;

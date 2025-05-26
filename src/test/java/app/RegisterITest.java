@@ -3,7 +3,7 @@ package app;
 import app.model.Role;
 import app.model.User;
 import app.repository.UserRepository;
-import app.service.UserServiceImpl;
+import app.service.impl.UserServiceImpl;
 import app.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

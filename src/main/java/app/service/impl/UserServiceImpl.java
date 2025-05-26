@@ -1,4 +1,4 @@
-package app.service;
+package app.service.impl;
 
 import app.exception.UserDoesNotExist;
 import app.exception.UsernameAlreadyExistException;
@@ -7,6 +7,7 @@ import app.model.Role;
 import app.model.User;
 import app.repository.UserRepository;
 import app.security.AuthenticationMetadata;
+import app.service.UserService;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
 import org.springframework.beans.factory.annotation.Autowired;

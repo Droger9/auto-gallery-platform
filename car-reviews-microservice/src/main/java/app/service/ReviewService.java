@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Service interface for managing reviews on listings.
+ * Service interface for managing reviews on listings
  */
 public interface ReviewService {
 
     /**
-     * Retrieves all reviews associated with a specific listing.
+     * Retrieves all reviews associated with a specific listing
      *
      * @param listingId the ID of the listing
      * @return list of reviews
@@ -19,7 +19,7 @@ public interface ReviewService {
     List<Review> getReviewsByListing(UUID listingId);
 
     /**
-     * Creates a new review for a listing by a specific user.
+     * Creates a new review for a listing by a specific user
      *
      * @param listingId the ID of the listing
      * @param userId the ID of the user posting the review
@@ -29,7 +29,7 @@ public interface ReviewService {
     Review createReview(UUID listingId, UUID userId, String content);
 
     /**
-     * Deletes a review if the requester is the owner or an admin.
+     * Deletes a review if the requester is the owner or an admin
      *
      * @param reviewId the ID of the review
      * @param userId the ID of the current user

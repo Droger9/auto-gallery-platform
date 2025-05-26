@@ -4,6 +4,8 @@ import app.model.Listing;
 import app.model.Role;
 import app.model.User;
 import app.repository.ListingRepository;
+import app.service.impl.ListingServiceImpl;
+import app.service.impl.UserServiceImpl;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import jakarta.persistence.EntityNotFoundException;

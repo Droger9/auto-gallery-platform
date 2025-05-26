@@ -8,32 +8,48 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Service interface for interacting with the external review microservice.
+ * Service interface for interacting with the external review microservice
  */
 public interface ReviewService {
 
     /**
-     * Builds a review request DTO from internal data.
+     * Builds a review request DTO from listing, content, and user data
+     *
+     * @param id the ID of the listing
+     * @param content the content of the review
+     * @param user the user posting the review
+     * @return the populated CreateReviewRequestDto
      */
     CreateReviewRequestDto getCreateReviewRequestDto(UUID id, String content, User user);
 
     /**
-     * Retrieves all reviews for a listing from the review service.
+     * Retrieves reviews for a given listing
+     *
+     * @param id the ID of the listing
+     * @return list of review DTOs
      */
     List<ReviewDto> getReviewDtos(UUID id);
 
     /**
-     * Sends a new review creation request to the review service.
+     * Sends a request to create a new review
+     *
+     * @param requestDto the review request DTO
      */
     void createReview(CreateReviewRequestDto requestDto);
 
     /**
-     * Requests the deletion of a review from the review service.
+     * Deletes a review via the review microservice
+     *
+     * @param reviewId the review ID
+     * @param user the user performing the deletion
      */
     void deleteReview(UUID reviewId, User user);
 
     /**
-     * Resolves and assigns usernames to each ReviewDto based on userId.
+     * Adds the username to each review DTO by resolving userId from the main service
+     *
+     * @param reviews the list of reviews to enrich
      */
     void addUsernameToDto(List<ReviewDto> reviews);
 }
+

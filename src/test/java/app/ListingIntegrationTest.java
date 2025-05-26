@@ -5,7 +5,7 @@ import app.model.Role;
 import app.model.User;
 import app.repository.ListingRepository;
 import app.repository.UserRepository;
-import app.service.ListingServiceImpl;
+import app.service.impl.ListingServiceImpl;
 import app.web.dto.CreateNewListing;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,11 @@
-package app.service;
+package app.service.impl;
 
 import app.exception.ImageDoesNotExist;
 import app.model.Image;
 import app.model.Listing;
 import app.model.User;
 import app.repository.ImageRepository;
+import app.service.ImageService;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ImageDto;
 import jakarta.transaction.Transactional;

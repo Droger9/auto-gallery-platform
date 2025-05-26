@@ -5,6 +5,7 @@ import app.model.Image;
 import app.model.Listing;
 import app.model.User;
 import app.repository.ImageRepository;
+import app.service.impl.ImageServiceImpl;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ImageDto;
 import org.junit.jupiter.api.BeforeEach;

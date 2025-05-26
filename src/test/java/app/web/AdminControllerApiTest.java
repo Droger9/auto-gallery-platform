@@ -3,7 +3,7 @@ package app.web;
 import app.model.Role;
 import app.model.User;
 import app.security.AuthenticationMetadata;
-import app.service.UserServiceImpl;
+import app.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

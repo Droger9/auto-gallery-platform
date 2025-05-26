@@ -1,9 +1,11 @@
-package app.service;
+package app.service.impl;
 
 import app.model.Listing;
 import app.model.Role;
 import app.model.User;
 import app.repository.ListingRepository;
+import app.service.ListingService;
+import app.service.UserService;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import jakarta.persistence.EntityNotFoundException;

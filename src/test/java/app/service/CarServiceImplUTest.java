@@ -4,6 +4,7 @@ import app.model.Car;
 import app.model.CarType;
 import app.model.Listing;
 import app.repository.CarRepository;
+import app.service.impl.CarServiceImpl;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import org.junit.jupiter.api.BeforeEach;
