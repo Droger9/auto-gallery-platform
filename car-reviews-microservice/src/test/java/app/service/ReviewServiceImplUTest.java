@@ -2,6 +2,7 @@ package app.service;
 
 import app.model.Review;
 import app.repository.ReviewRepository;
+import app.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

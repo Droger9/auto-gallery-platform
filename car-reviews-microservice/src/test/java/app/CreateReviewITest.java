@@ -2,7 +2,7 @@ package app;
 
 import app.model.Review;
 import app.repository.ReviewRepository;
-import app.service.ReviewServiceImpl;
+import app.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

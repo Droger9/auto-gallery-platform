@@ -1,10 +1,11 @@
-package app.review.service;
+package app.review.service.impl;
 
 import app.model.Role;
 import app.model.User;
 import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
 import app.review.client.dto.ReviewDto;
+import app.review.service.ReviewService;
 import app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

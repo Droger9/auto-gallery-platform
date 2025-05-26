@@ -1,7 +1,7 @@
 package app.web;
 
 import app.model.Review;
-import app.service.ReviewServiceImpl;
+import app.service.impl.ReviewServiceImpl;
 import app.web.dto.CreateReviewRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

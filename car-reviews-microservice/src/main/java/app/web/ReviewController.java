@@ -1,7 +1,7 @@
 package app.web;
 
 import app.model.Review;
-import app.service.ReviewServiceImpl;
+import app.service.impl.ReviewServiceImpl;
 import app.web.dto.CreateReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

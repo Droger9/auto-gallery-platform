@@ -2,7 +2,7 @@ package app.web;
 
 import app.model.*;
 import app.review.client.ReviewClient;
-import app.review.service.ReviewServiceImpl;
+import app.review.service.impl.ReviewServiceImpl;
 import app.security.AuthenticationMetadata;
 import app.service.impl.CarServiceImpl;
 import app.service.impl.ImageServiceImpl;

@@ -1,7 +1,8 @@
-package app.service;
+package app.service.impl;
 
 import app.model.Review;
 import app.repository.ReviewRepository;
+import app.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

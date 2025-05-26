@@ -5,7 +5,7 @@ import app.model.User;
 import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
 import app.review.client.dto.ReviewDto;
-import app.review.service.ReviewServiceImpl;
+import app.review.service.impl.ReviewServiceImpl;
 import app.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
