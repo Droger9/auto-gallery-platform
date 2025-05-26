@@ -3,7 +3,7 @@ package app.web;
 import app.model.Role;
 import app.model.User;
 import app.security.AuthenticationMetadata;
-import app.service.UserService;
+import app.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -32,7 +32,7 @@ public class AdminControllerApiTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Test
     void testListNonAdminUsers_AsAdmin() throws Exception {
@@ -56,8 +56,8 @@ public class AdminControllerApiTest {
                 .build();
         List<User> nonAdminUsers = Arrays.asList(nonAdmin1, nonAdmin2);
 
-        when(userService.findByUsername("adminUser")).thenReturn(adminUser);
-        when(userService.findAllByRole(Role.USER)).thenReturn(nonAdminUsers);
+        when(userServiceImpl.findByUsername("adminUser")).thenReturn(adminUser);
+        when(userServiceImpl.findAllByRole(Role.USER)).thenReturn(nonAdminUsers);
 
         AuthenticationMetadata authMeta = new AuthenticationMetadata(adminId, "adminUser", "dummyPass", Role.ADMIN);
 
@@ -68,8 +68,8 @@ public class AdminControllerApiTest {
                 .andExpect(model().attribute("nonAdminUsers", hasSize(2)))
                 .andExpect(model().attributeExists("user"));
 
-        verify(userService, times(1)).findByUsername("adminUser");
-        verify(userService, times(1)).findAllByRole(Role.USER);
+        verify(userServiceImpl, times(1)).findByUsername("adminUser");
+        verify(userServiceImpl, times(1)).findAllByRole(Role.USER);
     }
 
     @Test
@@ -81,11 +81,11 @@ public class AdminControllerApiTest {
                 .role(Role.ADMIN)
                 .build();
 
-        when(userService.findByUsername("adminUser")).thenReturn(adminUser);
+        when(userServiceImpl.findByUsername("adminUser")).thenReturn(adminUser);
 
         UUID targetUserId = UUID.randomUUID();
 
-        doNothing().when(userService).promoteToAdmin(eq(targetUserId));
+        doNothing().when(userServiceImpl).promoteToAdmin(eq(targetUserId));
 
         AuthenticationMetadata authMeta = new AuthenticationMetadata(adminId, "adminUser", "dummyPass", Role.ADMIN);
 
@@ -95,6 +95,6 @@ public class AdminControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/users"));
 
-        verify(userService, times(1)).promoteToAdmin(eq(targetUserId));
+        verify(userServiceImpl, times(1)).promoteToAdmin(eq(targetUserId));
     }
 }

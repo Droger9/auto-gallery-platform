@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceUTest {
+public class ReviewServiceImplUTest {
 
     @Mock
     private ReviewRepository reviewRepository;
 
     @InjectMocks
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     private Review testReview;
     private UUID listingId;

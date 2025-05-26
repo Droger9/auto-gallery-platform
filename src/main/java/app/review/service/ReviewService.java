@@ -1,68 +1,39 @@
 package app.review.service;
 
-import app.model.Role;
 import app.model.User;
-import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
 import app.review.client.dto.ReviewDto;
-import app.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-@Service
-public class ReviewService {
+/**
+ * Service interface for interacting with the external review microservice.
+ */
+public interface ReviewService {
 
-    private final ReviewClient reviewClient;
-    private final UserService userService;
+    /**
+     * Builds a review request DTO from internal data.
+     */
+    CreateReviewRequestDto getCreateReviewRequestDto(UUID id, String content, User user);
 
-    @Autowired
-    public ReviewService(ReviewClient reviewClient, UserService userService) {
-        this.reviewClient = reviewClient;
-        this.userService = userService;
-    }
+    /**
+     * Retrieves all reviews for a listing from the review service.
+     */
+    List<ReviewDto> getReviewDtos(UUID id);
 
-    public CreateReviewRequestDto getCreateReviewRequestDto(UUID id, String content, User user) {
+    /**
+     * Sends a new review creation request to the review service.
+     */
+    void createReview(CreateReviewRequestDto requestDto);
 
-        CreateReviewRequestDto requestDto = new CreateReviewRequestDto();
-        requestDto.setListingId(id);
-        requestDto.setUserId(user.getId());
-        requestDto.setContent(content);
+    /**
+     * Requests the deletion of a review from the review service.
+     */
+    void deleteReview(UUID reviewId, User user);
 
-        return requestDto;
-    }
-
-    public List<ReviewDto> getReviewDtos(UUID id) {
-
-        List<ReviewDto> reviews = reviewClient.getReviews(id);
-        return reviews;
-
-    }
-
-    public void createReview(CreateReviewRequestDto requestDto) {
-        reviewClient.createReview(requestDto);
-    }
-
-    public void deleteReview(UUID reviewId, User user) {
-
-        boolean isAdmin = (user.getRole() == Role.ADMIN);
-        reviewClient.deleteReview(reviewId, user.getId(), isAdmin);
-
-    }
-
-    public void addUsernameToDto(List<ReviewDto> reviews) {
-
-        for (ReviewDto review : reviews) {
-
-            User user = userService.getById(review.getUserId());
-
-            if (user != null) {
-                review.setUsername(user.getUsername());
-            } else {
-                review.setUsername("Unknown User");
-            }
-        }
-    }
+    /**
+     * Resolves and assigns usernames to each ReviewDto based on userId.
+     */
+    void addUsernameToDto(List<ReviewDto> reviews);
 }

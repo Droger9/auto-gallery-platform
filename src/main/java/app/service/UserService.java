@@ -1,120 +1,74 @@
 package app.service;
 
-import app.exception.UserDoesNotExist;
-import app.exception.UsernameAlreadyExistException;
 import app.model.Listing;
 import app.model.Role;
 import app.model.User;
-import app.repository.UserRepository;
 import app.security.AuthenticationMetadata;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserEditRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-@Service
-public class UserService implements UserDetailsService {
+/**
+ * Service interface for user-related operations.
+ */
+public interface UserService extends UserDetailsService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    /**
+     * Registers a new user.
+     */
+    void register(RegisterRequest registerRequest);
 
-    @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-
-
-    public void register(RegisterRequest registerRequest) {
-
-        Optional<User> optionalUser = userRepository.findByUsername(registerRequest.getUsername());
-
-        if (optionalUser.isPresent()) {
-            throw new UsernameAlreadyExistException("Username [%s] already exist.".formatted(registerRequest.getUsername()));
-        }
-
-        User user = User.builder()
-                .username(registerRequest.getUsername())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(Role.USER)
-                .build();
-
-        userRepository.save(user);
-
-    }
-
-
+    /**
+     * Loads a user by username (used for authentication).
+     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username);
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+    /**
+     * Retrieves a user by ID.
+     */
+    User getById(UUID userId);
 
-        return new AuthenticationMetadata(user.getId(),username, user.getPassword(),user.getRole());
-    }
+    /**
+     * Retrieves a user by username.
+     */
+    User findByUsername(String username);
 
+    /**
+     * Gets a list of bookmarked listings by a user.
+     */
+    List<Listing> findBookmarkedListings(User user);
 
-    public User getById(UUID userId) {
+    /**
+     * Saves or updates a user.
+     */
+    void save(User user);
 
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserDoesNotExist("User with ID " + userId + " does not exist"));
-    }
+    /**
+     * Finds all users with the specified role.
+     */
+    List<User> findAllByRole(Role role);
 
-    public User findByUsername(String username) {
+    /**
+     * Promotes a user to admin.
+     */
+    void promoteToAdmin(UUID userId);
 
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-    }
+    /**
+     * Revokes admin rights from a user.
+     */
+    void revokeAdmin(UUID userId);
 
-    public List<Listing> findBookmarkedListings(User user) {
-        return user.getBookmarkedListings();
-    }
+    /**
+     * Edits the email of the currently authenticated user.
+     */
+    void editUserDetails(UserEditRequest userEditRequest, AuthenticationMetadata authenticationMetadata);
 
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-    public List<User> findAllByRole(Role role) {
-        return userRepository.findAllByRole(role);
-    }
-
-    public void promoteToAdmin(UUID userId) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserDoesNotExist("User not found"));
-
-        user.setRole(Role.ADMIN);
-        userRepository.save(user);
-    }
-
-    public void editUserDetails(UserEditRequest userEditRequest, AuthenticationMetadata authenticationMetadata) {
-        User user = getById(authenticationMetadata.getUserId());
-        String email = userEditRequest.getEmail();
-        if(email != null && email.trim().isEmpty()){
-            email = null;
-        }
-        user.setEmail(email);
-        userRepository.save(user);
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public void revokeAdmin(UUID userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserDoesNotExist("User not found"));
-
-        if (user.getRole() == Role.ADMIN) {
-            user.setRole(Role.USER);
-            userRepository.save(user);
-        }
-    }
+    /**
+     * Retrieves all users.
+     */
+    List<User> findAll();
 }

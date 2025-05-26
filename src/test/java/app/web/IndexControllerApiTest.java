@@ -4,8 +4,8 @@ import app.exception.UsernameAlreadyExistException;
 import app.model.Role;
 import app.model.User;
 import app.security.AuthenticationMetadata;
-import app.service.ListingService;
-import app.service.UserService;
+import app.service.ListingServiceImpl;
+import app.service.UserServiceImpl;
 import app.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class IndexControllerApiTest {
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @MockitoBean
-    private ListingService listingService;
+    private ListingServiceImpl listingServiceImpl;
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,7 +70,7 @@ public class IndexControllerApiTest {
 
     @Test
     void postRequestToRegisterEndpoint_happyPath() throws Exception {
-        doNothing().when(userService).register(any(RegisterRequest.class));
+        doNothing().when(userServiceImpl).register(any(RegisterRequest.class));
 
         mockMvc.perform(post("/register")
                         .param("username", "droger")
@@ -79,13 +79,13 @@ public class IndexControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login"));
 
-        verify(userService, times(1)).register(any(RegisterRequest.class));
+        verify(userServiceImpl, times(1)).register(any(RegisterRequest.class));
     }
 
     @Test
     void postRequestToRegisterEndpointWhenUsernameAlreadyExist_thenRedirectToRegisterWithFlashParameter() throws Exception {
         doThrow(new UsernameAlreadyExistException("Username already exist!"))
-                .when(userService).register(any(RegisterRequest.class));
+                .when(userServiceImpl).register(any(RegisterRequest.class));
 
         mockMvc.perform(post("/register")
                         .param("username", "droger")
@@ -95,7 +95,7 @@ public class IndexControllerApiTest {
                 .andExpect(redirectedUrl("/register"))
                 .andExpect(flash().attributeExists("usernameAlreadyExistMessage"));
 
-        verify(userService, times(1)).register(any(RegisterRequest.class));
+        verify(userServiceImpl, times(1)).register(any(RegisterRequest.class));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class IndexControllerApiTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("register"));
 
-        verify(userService, never()).register(any(RegisterRequest.class));
+        verify(userServiceImpl, never()).register(any(RegisterRequest.class));
     }
 
     @Test
@@ -118,8 +118,8 @@ public class IndexControllerApiTest {
                 .username("User123")
                 .role(Role.USER)
                 .build();
-        when(userService.getById(userId)).thenReturn(user);
-        when(listingService.getAll()).thenReturn(Collections.emptyList());
+        when(userServiceImpl.getById(userId)).thenReturn(user);
+        when(listingServiceImpl.getAll()).thenReturn(Collections.emptyList());
 
         AuthenticationMetadata principal = new AuthenticationMetadata(userId, user.getUsername(), "123123", Role.USER);
 
@@ -129,13 +129,13 @@ public class IndexControllerApiTest {
                 .andExpect(model().attributeExists("user"))
                 .andExpect(model().attribute("allListings", org.hamcrest.Matchers.empty()));
 
-        verify(userService, times(1)).getById(userId);
+        verify(userServiceImpl, times(1)).getById(userId);
     }
 
     @Test
     void getUnauthenticatedRequestToHome_redirectToLogin() throws Exception {
         mockMvc.perform(get("/home"))
                 .andExpect(status().is3xxRedirection());
-        verify(userService, never()).getById(any());
+        verify(userServiceImpl, never()).getById(any());
     }
 }

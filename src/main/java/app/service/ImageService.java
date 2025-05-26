@@ -1,68 +1,46 @@
 package app.service;
 
-import app.exception.ImageDoesNotExist;
 import app.model.Image;
 import app.model.Listing;
 import app.model.User;
-import app.repository.ImageRepository;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ImageDto;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.nio.file.AccessDeniedException;
 import java.util.UUID;
 
-@Service
-public class ImageService {
+/**
+ * Service interface for managing listing images.
+ */
+public interface ImageService {
 
-    private final ImageRepository imageRepository;
+    /**
+     * Creates and saves a new image for a listing using data from listing creation.
+     */
+    Image createImage(CreateNewListing createNewListing, Listing listing);
 
-    @Autowired
-    public ImageService(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
+    /**
+     * Saves an image to the database.
+     */
+    void saveImage(Image image);
 
-    public Image createImage(CreateNewListing createNewListing, Listing listing) {
-        Image image = Image.builder()
-                .url(createNewListing.getImageUrl())
-                .listing(listing)
-                .build();
+    /**
+     * Creates an Image instance from DTO and associates it with a listing.
+     */
+    Image addImage(ImageDto imageDto, Listing listing);
 
-        return imageRepository.save(image);
-    }
+    /**
+     * Validates that the user owns the listing associated with the image.
+     */
+    void validateImageOwnership(Listing listing, User user) throws AccessDeniedException;
 
-    @Transactional
-    public void saveImage(Image image) {
-        imageRepository.save(image);
-    }
+    /**
+     * Retrieves an image by ID.
+     */
+    Image findById(UUID imageId);
 
-
-    public Image addImage(ImageDto imageDto, Listing listing) {
-        Image image = new Image();
-        image.setUrl(imageDto.getUrl());
-        image.setListing(listing);
-        return image;
-    }
-
-    public void validateImageOwnership(Listing listing, User user) throws AccessDeniedException {
-        if (!listing.getOwner().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You do not own this listing.");
-        }
-    }
-
-
-    public Image findById(UUID imageId) {
-        return imageRepository.findById(imageId).orElseThrow(() -> new ImageDoesNotExist("Image not found"));
-    }
-
-    public void deleteImage(UUID imageId, Listing listing, User user) throws AccessDeniedException {
-
-        if (!listing.getOwner().getId().equals(user.getId())) {
-            throw new AccessDeniedException("You do not own this listing.");
-        }
-
-        imageRepository.deleteById(imageId);
-    }
+    /**
+     * Deletes an image if the user owns the listing.
+     */
+    void deleteImage(UUID imageId, Listing listing, User user) throws AccessDeniedException;
 }

@@ -5,7 +5,7 @@ import app.model.Role;
 import app.model.User;
 import app.repository.ListingRepository;
 import app.repository.UserRepository;
-import app.service.ListingService;
+import app.service.ListingServiceImpl;
 import app.web.dto.CreateNewListing;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ListingIntegrationTest {
 
     @Autowired
-    private ListingService listingService;
+    private ListingServiceImpl listingServiceImpl;
 
     @Autowired
     private ListingRepository listingRepository;
@@ -50,7 +50,7 @@ public class ListingIntegrationTest {
         dto.setColor("Red");
         dto.setYearOfManufacture(2022);
 
-        Listing createdListing = listingService.createListing(dto, owner);
+        Listing createdListing = listingServiceImpl.createListing(dto, owner);
         assertNotNull(createdListing);
         assertEquals("Test Listing", createdListing.getTitle());
         assertEquals("555-1234", createdListing.getPhoneNumber());

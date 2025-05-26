@@ -5,7 +5,7 @@ import app.model.User;
 import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
 import app.review.client.dto.ReviewDto;
-import app.review.service.ReviewService;
+import app.review.service.ReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,16 +19,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ReviewServiceUTest {
+public class ReviewServiceImplUTest {
 
     @Mock
     private ReviewClient reviewClient;
 
     @Mock
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @InjectMocks
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     private User testUser;
     private UUID testUserId;
@@ -126,12 +126,12 @@ public class ReviewServiceUTest {
         List<ReviewDto> reviews = new ArrayList<>();
         reviews.add(review);
 
-        when(userService.getById(testUserId)).thenReturn(testUser);
+        when(userServiceImpl.getById(testUserId)).thenReturn(testUser);
 
         reviewService.addUsernameToDto(reviews);
 
         assertEquals("testuser", reviews.get(0).getUsername());
-        verify(userService, times(1)).getById(testUserId);
+        verify(userServiceImpl, times(1)).getById(testUserId);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ReviewServiceUTest {
         List<ReviewDto> reviews = new ArrayList<>();
         reviews.add(review);
 
-        lenient().when(userService.getById(missingUserId)).thenReturn(null);
+        lenient().when(userServiceImpl.getById(missingUserId)).thenReturn(null);
 
         reviewService.addUsernameToDto(reviews);
 

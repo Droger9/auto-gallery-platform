@@ -1,15 +1,11 @@
 package app.web;
 
 import app.model.*;
-import app.review.client.ReviewClient;
 import app.review.client.dto.CreateReviewRequestDto;
 import app.review.client.dto.ReviewDto;
 import app.review.service.ReviewService;
 import app.security.AuthenticationMetadata;
-import app.service.CarService;
-import app.service.ImageService;
-import app.service.ListingService;
-import app.service.UserService;
+import app.service.*;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import jakarta.validation.Valid;
@@ -37,7 +33,7 @@ public class ListingController {
     private final ReviewService reviewService;
 
     @Autowired
-    public ListingController(UserService userService, ListingService listingService, CarService carService, ImageService imageService, ReviewClient reviewClient, ReviewService reviewService) {
+    public ListingController(UserService userService, ListingService listingService, CarService carService, ImageService imageService, ReviewService reviewService) {
         this.userService = userService;
         this.listingService = listingService;
         this.carService = carService;

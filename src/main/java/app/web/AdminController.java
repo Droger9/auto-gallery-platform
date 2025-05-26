@@ -3,6 +3,7 @@ package app.web;
 import app.model.User;
 import app.security.AuthenticationMetadata;
 import app.service.UserService;
+import app.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,7 @@ public class AdminController {
     private final UserService userService;
 
     @Autowired
-    public AdminController(UserService userService) {
+    public AdminController(UserServiceImpl userServiceImpl, UserService userService) {
         this.userService = userService;
     }
 

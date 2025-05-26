@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ImageServiceUTest {
+public class ImageServiceImplUTest {
 
     @Mock
     private ImageRepository imageRepository;
 
     @InjectMocks
-    private ImageService imageService;
+    private ImageServiceImpl imageService;
 
     private CreateNewListing createNewListing;
     private Listing listing;

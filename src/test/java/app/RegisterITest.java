@@ -3,7 +3,7 @@ package app;
 import app.model.Role;
 import app.model.User;
 import app.repository.UserRepository;
-import app.service.UserService;
+import app.service.UserServiceImpl;
 import app.web.dto.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RegisterITest {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
     private UserRepository userRepository;
@@ -33,7 +33,7 @@ public class RegisterITest {
         request.setUsername("integrationUser");
         request.setPassword("password123");
 
-        userService.register(request);
+        userServiceImpl.register(request);
 
         Optional<User> userOpt = userRepository.findByUsername("integrationUser");
         assertTrue(userOpt.isPresent());

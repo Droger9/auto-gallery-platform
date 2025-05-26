@@ -2,12 +2,12 @@ package app.web;
 
 import app.model.*;
 import app.review.client.ReviewClient;
-import app.review.service.ReviewService;
+import app.review.service.ReviewServiceImpl;
 import app.security.AuthenticationMetadata;
-import app.service.CarService;
-import app.service.ImageService;
-import app.service.ListingService;
-import app.service.UserService;
+import app.service.CarServiceImpl;
+import app.service.ImageServiceImpl;
+import app.service.ListingServiceImpl;
+import app.service.UserServiceImpl;
 import app.web.dto.CreateNewListing;
 import app.web.dto.ListingCarDto;
 import org.junit.jupiter.api.Test;
@@ -38,19 +38,19 @@ public class ListingControllerApiTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @MockitoBean
-    private ListingService listingService;
+    private ListingServiceImpl listingServiceImpl;
 
     @MockitoBean
-    private CarService carService;
+    private CarServiceImpl carService;
 
     @MockitoBean
-    private ImageService imageService;
+    private ImageServiceImpl imageService;
 
     @MockitoBean
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     @MockitoBean
     private ReviewClient reviewClient;
@@ -63,7 +63,7 @@ public class ListingControllerApiTest {
     void testGetAddListingPage() throws Exception {
         UUID userId = UUID.randomUUID();
         User user = User.builder().id(userId).username("dummyUser").build();
-        when(userService.getById(userId)).thenReturn(user);
+        when(userServiceImpl.getById(userId)).thenReturn(user);
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);
         mockMvc.perform(get("/listings/add").with(user(auth)))
@@ -71,14 +71,14 @@ public class ListingControllerApiTest {
                 .andExpect(view().name("add-listing"))
                 .andExpect(model().attributeExists("createNewListing", "user"));
 
-        verify(userService, times(1)).getById(userId);
+        verify(userServiceImpl, times(1)).getById(userId);
     }
 
     @Test
     void testPostAddListing_Success() throws Exception {
         UUID userId = UUID.randomUUID();
         User owner = User.builder().id(userId).username("dummyOwner").build();
-        when(userService.getById(userId)).thenReturn(owner);
+        when(userServiceImpl.getById(userId)).thenReturn(owner);
 
         String title = "New Listing";
         String phone = "555-7777";
@@ -103,7 +103,7 @@ public class ListingControllerApiTest {
                 .owner(owner)
                 .build();
 
-        when(listingService.createListing(any(CreateNewListing.class), eq(owner))).thenReturn(listing);
+        when(listingServiceImpl.createListing(any(CreateNewListing.class), eq(owner))).thenReturn(listing);
         when(carService.createCar(any(CreateNewListing.class), eq(listing))).thenReturn(new Car());
         when(imageService.createImage(any(CreateNewListing.class), eq(listing))).thenReturn(null);
 
@@ -123,7 +123,7 @@ public class ListingControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/home"));
 
-        verify(listingService, times(1)).createListing(any(CreateNewListing.class), eq(owner));
+        verify(listingServiceImpl, times(1)).createListing(any(CreateNewListing.class), eq(owner));
         verify(carService, times(1)).createCar(any(CreateNewListing.class), eq(listing));
         verify(imageService, times(1)).createImage(any(CreateNewListing.class), eq(listing));
     }
@@ -145,8 +145,8 @@ public class ListingControllerApiTest {
 
         List<app.review.client.dto.ReviewDto> reviews = Collections.singletonList(reviewDto);
 
-        when(listingService.getListingById(listingId)).thenReturn(listing);
-        when(userService.getById(userId)).thenReturn(user);
+        when(listingServiceImpl.getListingById(listingId)).thenReturn(listing);
+        when(userServiceImpl.getById(userId)).thenReturn(user);
         when(reviewService.getReviewDtos(listingId)).thenReturn(reviews);
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);
@@ -157,8 +157,8 @@ public class ListingControllerApiTest {
                 .andExpect(model().attribute("user", user))
                 .andExpect(model().attribute("reviews", hasSize(1)));
 
-        verify(listingService, times(1)).getListingById(listingId);
-        verify(userService, times(1)).getById(userId);
+        verify(listingServiceImpl, times(1)).getListingById(listingId);
+        verify(userServiceImpl, times(1)).getById(userId);
         verify(reviewService, times(1)).getReviewDtos(listingId);
     }
 
@@ -169,8 +169,8 @@ public class ListingControllerApiTest {
         User user = User.builder().id(userId).username("dummyUser").build();
         Listing listing = Listing.builder().id(listingId).owner(user).build();
 
-        when(listingService.getListingById(listingId)).thenReturn(listing);
-        when(userService.getById(userId)).thenReturn(user);
+        when(listingServiceImpl.getListingById(listingId)).thenReturn(listing);
+        when(userServiceImpl.getById(userId)).thenReturn(user);
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);
         mockMvc.perform(delete("/listings/{id}", listingId)
@@ -179,7 +179,7 @@ public class ListingControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(listingService, times(1)).deleteListing(eq(listingId), eq(listing), eq(user));
+        verify(listingServiceImpl, times(1)).deleteListing(eq(listingId), eq(listing), eq(user));
     }
 
     @Test
@@ -209,8 +209,8 @@ public class ListingControllerApiTest {
                 .images(Collections.emptyList())
                 .build();
 
-        when(userService.findByUsername("dummyUser")).thenReturn(user);
-        when(listingService.getListingIfOwned(listingId, user)).thenReturn(listing);
+        when(userServiceImpl.findByUsername("dummyUser")).thenReturn(user);
+        when(listingServiceImpl.getListingIfOwned(listingId, user)).thenReturn(listing);
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);
         mockMvc.perform(get("/listings/edit/{id}", listingId)
@@ -219,8 +219,8 @@ public class ListingControllerApiTest {
                 .andExpect(view().name("edit-listing"))
                 .andExpect(model().attributeExists("listingCarDto", "images", "user"));
 
-        verify(userService, times(1)).findByUsername("dummyUser");
-        verify(listingService, times(1)).getListingIfOwned(listingId, user);
+        verify(userServiceImpl, times(1)).findByUsername("dummyUser");
+        verify(listingServiceImpl, times(1)).getListingIfOwned(listingId, user);
     }
 
 
@@ -244,9 +244,9 @@ public class ListingControllerApiTest {
                 .carType(null)
                 .build();
 
-        when(userService.findByUsername("dummyUser")).thenReturn(user);
-        when(listingService.getListingIfOwned(eq(listingId), eq(user))).thenReturn(listing);
-        doNothing().when(listingService).updateListing(any(ListingCarDto.class), eq(listing));
+        when(userServiceImpl.findByUsername("dummyUser")).thenReturn(user);
+        when(listingServiceImpl.getListingIfOwned(eq(listingId), eq(user))).thenReturn(listing);
+        doNothing().when(listingServiceImpl).updateListing(any(ListingCarDto.class), eq(listing));
         doNothing().when(carService).updateCar(any(ListingCarDto.class), eq(listing));
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);
@@ -264,7 +264,7 @@ public class ListingControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/listings/" + dto.getListingId()));
 
-        verify(listingService, times(1)).updateListing(any(ListingCarDto.class), eq(listing));
+        verify(listingServiceImpl, times(1)).updateListing(any(ListingCarDto.class), eq(listing));
         verify(carService, times(1)).updateCar(any(ListingCarDto.class), eq(listing));
     }
 
@@ -274,7 +274,7 @@ public class ListingControllerApiTest {
         UUID userId = UUID.randomUUID();
         User user = User.builder().id(userId).username("dummyUser").build();
 
-        when(userService.findByUsername("dummyUser")).thenReturn(user);
+        when(userServiceImpl.findByUsername("dummyUser")).thenReturn(user);
 
         doNothing().when(reviewService).createReview(any());
 
@@ -296,7 +296,7 @@ public class ListingControllerApiTest {
         UUID userId = UUID.randomUUID();
         User user = User.builder().id(userId).username("dummyUser").build();
 
-        when(userService.findByUsername("dummyUser")).thenReturn(user);
+        when(userServiceImpl.findByUsername("dummyUser")).thenReturn(user);
         doNothing().when(reviewService).deleteReview(eq(reviewId), eq(user));
 
         AuthenticationMetadata auth = dummyAuth(userId, "dummyUser", Role.USER);

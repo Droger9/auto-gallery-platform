@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceUTest {
+public class UserServiceImplUTest {
 
     @Mock
     private UserRepository userRepository;
@@ -33,7 +33,7 @@ public class UserServiceUTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private User testUser;
 
@@ -59,7 +59,7 @@ public class UserServiceUTest {
         when(passwordEncoder.encode("password")).thenReturn("encodedPass");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        userService.register(req);
+        userServiceImpl.register(req);
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository, times(1)).save(userCaptor.capture());
@@ -78,7 +78,7 @@ public class UserServiceUTest {
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        UsernameAlreadyExistException ex = assertThrows(UsernameAlreadyExistException.class, () -> userService.register(req));
+        UsernameAlreadyExistException ex = assertThrows(UsernameAlreadyExistException.class, () -> userServiceImpl.register(req));
         assertEquals("Username [testuser] already exist.", ex.getMessage());
     }
 
@@ -86,7 +86,7 @@ public class UserServiceUTest {
     public void testLoadUserByUsername_Success() {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        AuthenticationMetadata metadata = (AuthenticationMetadata) userService.loadUserByUsername("testuser");
+        AuthenticationMetadata metadata = (AuthenticationMetadata) userServiceImpl.loadUserByUsername("testuser");
         assertEquals(testUser.getId(), metadata.getUserId());
         assertEquals("testuser", metadata.getUsername());
         assertEquals(testUser.getPassword(), metadata.getPassword());
@@ -98,7 +98,7 @@ public class UserServiceUTest {
     @Test
     public void testLoadUserByUsername_NotFound() {
         when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
-        assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername("nonexistent"));
+        assertThrows(UsernameNotFoundException.class, () -> userServiceImpl.loadUserByUsername("nonexistent"));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class UserServiceUTest {
         UUID id = testUser.getId();
         when(userRepository.findById(id)).thenReturn(Optional.of(testUser));
 
-        User user = userService.getById(id);
+        User user = userServiceImpl.getById(id);
         assertEquals(testUser, user);
     }
 
@@ -114,21 +114,21 @@ public class UserServiceUTest {
     public void testGetById_NotFound() {
         UUID randomId = UUID.randomUUID();
         when(userRepository.findById(randomId)).thenReturn(Optional.empty());
-        assertThrows(UserDoesNotExist.class, () -> userService.getById(randomId));
+        assertThrows(UserDoesNotExist.class, () -> userServiceImpl.getById(randomId));
     }
 
     @Test
     public void testFindByUsername_Success() {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
 
-        User user = userService.findByUsername("testuser");
+        User user = userServiceImpl.findByUsername("testuser");
         assertEquals(testUser, user);
     }
 
     @Test
     public void testFindByUsername_NotFound() {
         when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
-        assertThrows(UsernameNotFoundException.class, () -> userService.findByUsername("nonexistent"));
+        assertThrows(UsernameNotFoundException.class, () -> userServiceImpl.findByUsername("nonexistent"));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class UserServiceUTest {
         List<Listing> bookmarked = new ArrayList<>(Arrays.asList(listing1, listing2));
         testUser.setBookmarkedListings(bookmarked);
 
-        List<Listing> result = userService.findBookmarkedListings(testUser);
+        List<Listing> result = userServiceImpl.findBookmarkedListings(testUser);
         assertEquals(2, result.size());
         assertTrue(result.contains(listing1));
         assertTrue(result.contains(listing2));
@@ -146,7 +146,7 @@ public class UserServiceUTest {
 
     @Test
     public void testSave() {
-        userService.save(testUser);
+        userServiceImpl.save(testUser);
         verify(userRepository, times(1)).save(testUser);
     }
 
@@ -156,7 +156,7 @@ public class UserServiceUTest {
         userList.add(testUser);
         when(userRepository.findAllByRole(Role.USER)).thenReturn(userList);
 
-        List<User> result = userService.findAllByRole(Role.USER);
+        List<User> result = userServiceImpl.findAllByRole(Role.USER);
         assertEquals(1, result.size());
         assertEquals(testUser, result.get(0));
     }
@@ -167,7 +167,7 @@ public class UserServiceUTest {
         when(userRepository.findById(id)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        userService.promoteToAdmin(id);
+        userServiceImpl.promoteToAdmin(id);
         assertEquals(Role.ADMIN, testUser.getRole());
     }
 
@@ -175,7 +175,7 @@ public class UserServiceUTest {
     public void testPromoteToAdmin_UserNotFound() {
         UUID id = UUID.randomUUID();
         when(userRepository.findById(id)).thenReturn(Optional.empty());
-        assertThrows(UserDoesNotExist.class, () -> userService.promoteToAdmin(id));
+        assertThrows(UserDoesNotExist.class, () -> userServiceImpl.promoteToAdmin(id));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class UserServiceUTest {
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         AuthenticationMetadata authMetadata = new AuthenticationMetadata(testUser.getId(), "testuser", testUser.getPassword(), testUser.getRole());
-        userService.editUserDetails(editRequest, authMetadata);
+        userServiceImpl.editUserDetails(editRequest, authMetadata);
         assertEquals("newemail@example.com", testUser.getEmail());
     }
 }

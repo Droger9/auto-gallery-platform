@@ -2,7 +2,7 @@ package app;
 
 import app.model.Review;
 import app.repository.ReviewRepository;
-import app.service.ReviewService;
+import app.service.ReviewServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CreateReviewITest {
 
     @Autowired
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     @Autowired
     private ReviewRepository reviewRepository;

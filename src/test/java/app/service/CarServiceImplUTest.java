@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CarServiceUTest {
+public class CarServiceImplUTest {
 
     @Mock
     private CarRepository carRepository;
 
     @InjectMocks
-    private CarService carService;
+    private CarServiceImpl carService;
 
     private CreateNewListing createNewListing;
     private Listing listing;

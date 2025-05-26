@@ -1,7 +1,7 @@
 package app.web;
 
 import app.model.Review;
-import app.service.ReviewService;
+import app.service.ReviewServiceImpl;
 import app.web.dto.CreateReviewRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class ReviewControllerApiTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private ReviewService reviewService;
+    private ReviewServiceImpl reviewService;
 
     @Autowired
     private ObjectMapper objectMapper;

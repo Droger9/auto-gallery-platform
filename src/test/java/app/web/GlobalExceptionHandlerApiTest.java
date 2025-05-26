@@ -1,7 +1,7 @@
 package app.web;
 
 import app.security.AuthenticationMetadata;
-import app.service.UserService;
+import app.service.UserServiceImpl;
 import app.model.User;
 import app.model.Role;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class GlobalExceptionHandlerApiTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     private AuthenticationMetadata dummyAuth() {
         UUID userId = UUID.randomUUID();
@@ -36,7 +36,7 @@ public class GlobalExceptionHandlerApiTest {
                 .username("dummyUser")
                 .role(Role.USER)
                 .build();
-        when(userService.findByUsername("dummyUser")).thenReturn(dummyUser);
+        when(userServiceImpl.findByUsername("dummyUser")).thenReturn(dummyUser);
         return new AuthenticationMetadata(userId, "dummyUser", "dummyPass", Role.USER);
     }
 

@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ListingServiceUTest {
+public class ListingServiceImplUTest {
 
     @Mock
     private ListingRepository listingRepository;
 
     @Mock
-    private UserService userService; // for bookmark and save calls
+    private UserServiceImpl userServiceImpl; // for bookmark and save calls
 
     @InjectMocks
-    private ListingService listingService;
+    private ListingServiceImpl listingServiceImpl;
 
     private Listing testListing;
     private User owner;
@@ -83,7 +83,7 @@ public class ListingServiceUTest {
 
         when(listingRepository.save(any(Listing.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Listing created = listingService.createListing(createNewListing, owner);
+        Listing created = listingServiceImpl.createListing(createNewListing, owner);
         assertNotNull(created);
         assertEquals(createNewListing.getTitle(), created.getTitle());
         assertEquals(createNewListing.getPhoneNumber(), created.getPhoneNumber());
@@ -101,7 +101,7 @@ public class ListingServiceUTest {
         List<Listing> listings = Arrays.asList(testListing);
         when(listingRepository.findAllByDeletedFalse()).thenReturn(listings);
 
-        List<Listing> result = listingService.getAll();
+        List<Listing> result = listingServiceImpl.getAll();
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(testListing, result.get(0));
@@ -112,7 +112,7 @@ public class ListingServiceUTest {
         UUID id = testListing.getId();
         when(listingRepository.findById(id)).thenReturn(Optional.of(testListing));
 
-        Listing result = listingService.getListingById(id);
+        Listing result = listingServiceImpl.getListingById(id);
         assertNotNull(result);
         assertEquals(testListing, result);
     }
@@ -121,7 +121,7 @@ public class ListingServiceUTest {
     public void testGetListingById_NotFound() {
         UUID randomId = UUID.randomUUID();
         when(listingRepository.findById(randomId)).thenReturn(Optional.empty());
-        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> listingService.getListingById(randomId));
+        EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> listingServiceImpl.getListingById(randomId));
         assertEquals("Listing with id " + randomId + " not found", ex.getMessage());
     }
 
@@ -130,7 +130,7 @@ public class ListingServiceUTest {
         List<Listing> listings = Collections.singletonList(testListing);
         when(listingRepository.findAllByOwnerAndDeletedFalse(owner)).thenReturn(listings);
 
-        List<Listing> result = listingService.findAllByOwner(owner);
+        List<Listing> result = listingServiceImpl.findAllByOwner(owner);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(testListing, result.get(0));
@@ -140,7 +140,7 @@ public class ListingServiceUTest {
     public void testDeleteListing_AsOwner() throws Exception {
         when(listingRepository.save(testListing)).thenReturn(testListing);
 
-        assertDoesNotThrow(() -> listingService.deleteListing(testListing.getId(), testListing, owner));
+        assertDoesNotThrow(() -> listingServiceImpl.deleteListing(testListing.getId(), testListing, owner));
         assertTrue(testListing.isDeleted());
         verify(listingRepository, times(1)).save(testListing);
     }
@@ -156,7 +156,7 @@ public class ListingServiceUTest {
 
         when(listingRepository.save(testListing)).thenReturn(testListing);
 
-        assertDoesNotThrow(() -> listingService.deleteListing(testListing.getId(), testListing, admin));
+        assertDoesNotThrow(() -> listingServiceImpl.deleteListing(testListing.getId(), testListing, admin));
         assertTrue(testListing.isDeleted());
         verify(listingRepository, times(1)).save(testListing);
     }
@@ -171,7 +171,7 @@ public class ListingServiceUTest {
                 .build();
 
 
-        Exception ex = assertThrows(AccessDeniedException.class, () -> listingService.deleteListing(testListing.getId(), testListing, otherUser));
+        Exception ex = assertThrows(AccessDeniedException.class, () -> listingServiceImpl.deleteListing(testListing.getId(), testListing, otherUser));
         assertEquals("You are not authorized to delete this listing.", ex.getMessage());
         verify(listingRepository, never()).save(any(Listing.class));
     }
@@ -180,7 +180,7 @@ public class ListingServiceUTest {
     public void testUpdateListing() {
         when(listingRepository.save(testListing)).thenAnswer(invocation -> invocation.getArgument(0));
 
-        listingService.updateListing(listingCarDto, testListing);
+        listingServiceImpl.updateListing(listingCarDto, testListing);
         assertEquals(listingCarDto.getTitle(), testListing.getTitle());
         assertEquals(listingCarDto.getPhoneNumber(), testListing.getPhoneNumber());
         assertEquals(listingCarDto.getPrice(), testListing.getPrice());
@@ -193,11 +193,11 @@ public class ListingServiceUTest {
     @Test
     public void testBookmarkListing() {
         owner.setBookmarkedListings(new ArrayList<>());
-        doNothing().when(userService).save(owner);
+        doNothing().when(userServiceImpl).save(owner);
 
-        listingService.bookmarkListing(owner, testListing);
+        listingServiceImpl.bookmarkListing(owner, testListing);
         assertTrue(owner.getBookmarkedListings().contains(testListing));
-        verify(userService, times(1)).save(owner);
+        verify(userServiceImpl, times(1)).save(owner);
     }
 
     @Test
@@ -205,17 +205,17 @@ public class ListingServiceUTest {
         List<Listing> bookmarks = new ArrayList<>();
         bookmarks.add(testListing);
         owner.setBookmarkedListings(bookmarks);
-        doNothing().when(userService).save(owner);
+        doNothing().when(userServiceImpl).save(owner);
 
-        listingService.removeBookmarkedListing(owner, testListing);
+        listingServiceImpl.removeBookmarkedListing(owner, testListing);
         assertFalse(owner.getBookmarkedListings().contains(testListing));
-        verify(userService, times(1)).save(owner);
+        verify(userServiceImpl, times(1)).save(owner);
     }
 
     @Test
     public void testGetListingIfOwned_Success() throws Exception {
         when(listingRepository.findById(testListing.getId())).thenReturn(Optional.of(testListing));
-        Listing result = listingService.getListingIfOwned(testListing.getId(), owner);
+        Listing result = listingServiceImpl.getListingIfOwned(testListing.getId(), owner);
         assertEquals(testListing, result);
     }
 
@@ -229,7 +229,7 @@ public class ListingServiceUTest {
                 .build();
 
         when(listingRepository.findById(testListing.getId())).thenReturn(Optional.of(testListing));
-        Exception ex = assertThrows(AccessDeniedException.class, () -> listingService.getListingIfOwned(testListing.getId(), otherUser));
+        Exception ex = assertThrows(AccessDeniedException.class, () -> listingServiceImpl.getListingIfOwned(testListing.getId(), otherUser));
         assertEquals("You do not own this listing.", ex.getMessage());
     }
 }

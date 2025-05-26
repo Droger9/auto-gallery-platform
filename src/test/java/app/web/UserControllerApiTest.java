@@ -4,8 +4,8 @@ import app.model.Listing;
 import app.model.Role;
 import app.model.User;
 import app.security.AuthenticationMetadata;
-import app.service.ListingService;
-import app.service.UserService;
+import app.service.ListingServiceImpl;
+import app.service.UserServiceImpl;
 import app.web.dto.UserEditRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,10 @@ public class UserControllerApiTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @MockitoBean
-    private ListingService listingService;
+    private ListingServiceImpl listingServiceImpl;
 
     private AuthenticationMetadata dummyAuth(UUID userId, String username, Role role) {
         return new AuthenticationMetadata(userId, username, "dummyPass", role);
@@ -53,9 +53,9 @@ public class UserControllerApiTest {
         List<Listing> userListings = Arrays.asList(listing1, listing2);
         List<Listing> bookmarkedListings = Collections.singletonList(listing1);
 
-        when(userService.findByUsername("profileUser")).thenReturn(user);
-        when(listingService.findAllByOwner(user)).thenReturn(userListings);
-        when(userService.findBookmarkedListings(user)).thenReturn(bookmarkedListings);
+        when(userServiceImpl.findByUsername("profileUser")).thenReturn(user);
+        when(listingServiceImpl.findAllByOwner(user)).thenReturn(userListings);
+        when(userServiceImpl.findBookmarkedListings(user)).thenReturn(bookmarkedListings);
 
         AuthenticationMetadata auth = dummyAuth(userId, "profileUser", Role.USER);
         mockMvc.perform(get("/profile").with(user(auth)))
@@ -65,9 +65,9 @@ public class UserControllerApiTest {
                 .andExpect(model().attribute("userListings", hasSize(2)))
                 .andExpect(model().attribute("bookmarkedListings", hasSize(1)));
 
-        verify(userService, times(1)).findByUsername("profileUser");
-        verify(listingService, times(1)).findAllByOwner(user);
-        verify(userService, times(1)).findBookmarkedListings(user);
+        verify(userServiceImpl, times(1)).findByUsername("profileUser");
+        verify(listingServiceImpl, times(1)).findAllByOwner(user);
+        verify(userServiceImpl, times(1)).findBookmarkedListings(user);
     }
 
     @Test
@@ -79,8 +79,8 @@ public class UserControllerApiTest {
                 .email("oldemail@example.com")
                 .build();
 
-        when(userService.getById(userId)).thenReturn(user);
-        when(userService.findByUsername("editUser")).thenReturn(user);
+        when(userServiceImpl.getById(userId)).thenReturn(user);
+        when(userServiceImpl.findByUsername("editUser")).thenReturn(user);
 
         AuthenticationMetadata auth = dummyAuth(userId, "editUser", Role.USER);
         mockMvc.perform(get("/profile/edit").with(user(auth)))
@@ -88,7 +88,7 @@ public class UserControllerApiTest {
                 .andExpect(view().name("edit-profile"))
                 .andExpect(model().attributeExists("userEditRequest", "user"));
 
-        verify(userService, times(1)).getById(userId);
+        verify(userServiceImpl, times(1)).getById(userId);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class UserControllerApiTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("edit-profile"));
 
-        verify(userService, never()).editUserDetails(any(), any());
+        verify(userServiceImpl, never()).editUserDetails(any(), any());
     }
 
 
@@ -120,7 +120,7 @@ public class UserControllerApiTest {
                 .email("newemail@example.com")
                 .build();
 
-        when(userService.findByUsername("editUser")).thenReturn(user);
+        when(userServiceImpl.findByUsername("editUser")).thenReturn(user);
 
         AuthenticationMetadata auth = dummyAuth(userId, "editUser", Role.USER);
         mockMvc.perform(post("/profile/edit")
@@ -130,6 +130,6 @@ public class UserControllerApiTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/profile"));
 
-        verify(userService, times(1)).editUserDetails(any(UserEditRequest.class), eq(auth));
+        verify(userServiceImpl, times(1)).editUserDetails(any(UserEditRequest.class), eq(auth));
     }
 }

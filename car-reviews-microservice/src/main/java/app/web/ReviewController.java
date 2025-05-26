@@ -1,7 +1,7 @@
 package app.web;
 
 import app.model.Review;
-import app.service.ReviewService;
+import app.service.ReviewServiceImpl;
 import app.web.dto.CreateReviewRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RequestMapping("/api/v1/reviews")
 public class ReviewController {
 
-    private final ReviewService reviewService;
+    private final ReviewServiceImpl reviewService;
 
     @Autowired
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewServiceImpl reviewService) {
 
         this.reviewService = reviewService;
 
