@@ -104,4 +104,17 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public void revokeAdmin(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserDoesNotExist("User not found"));
+
+        if (user.getRole() == Role.ADMIN) {
+            user.setRole(Role.USER);
+            userRepository.save(user);
+        }
+    }
 }

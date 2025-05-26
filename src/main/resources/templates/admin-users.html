@@ -17,15 +17,15 @@
 <main class="container" style="margin-top: 100px;">
     <h2>Manage Users</h2>
 
-    <!-- If no non-admin users are found -->
-    <div th:if="${#lists.isEmpty(nonAdminUsers)}" class="form-container"
+    <!-- If no users are found -->
+    <div th:if="${#lists.isEmpty(users)}" class="form-container"
          style="background: #fff; padding: 2rem; border-radius: 10px;
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); max-width: 600px; margin: 2rem auto;">
-        <p>No non-admin users found.</p>
+        <p>No users found (except yourself).</p>
     </div>
 
-    <!-- Table of non-admin users -->
-    <div th:unless="${#lists.isEmpty(nonAdminUsers)}" class="form-container"
+    <!-- Table of users (excluding current admin) -->
+    <div th:unless="${#lists.isEmpty(users)}" class="form-container"
          style="background: #fff; padding: 2rem; border-radius: 10px;
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); margin: 2rem auto;">
 
@@ -38,16 +38,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="usr : ${nonAdminUsers}">
-                <td th:text="${usr.username}">username</td>
+            <tr th:each="usr : ${users}">
+                <td>
+                    <span th:text="${usr.username}">username</span>
+                    <span th:if="${usr.role.name() == 'ADMIN'}" class="badge">ADMIN</span>
+                </td>
                 <td th:text="${usr.email}">email@example.com</td>
                 <td style="text-align: center;">
-                    <!-- "Make Admin" form -->
-                    <form th:action="@{'/admin/users/' + ${usr.id} + '/makeAdmin'}"
-                          method="post"
-                          style="display: inline;">
-                        <button type="submit" class="cta-btn">Make Admin</button>
-                    </form>
+                    <div th:if="${usr.role.name() == 'ADMIN'}">
+                        <!-- Revoke Admin button -->
+                        <form th:action="@{'/admin/users/' + ${usr.id} + '/revokeAdmin'}"
+                              method="post" style="display: inline;">
+                            <button type="submit" class="cta-btn" style="background-color: #f44336;">Revoke Admin</button>
+                        </form>
+                    </div>
+                    <div th:if="${usr.role.name() != 'ADMIN'}">
+                        <!-- Make Admin button -->
+                        <form th:action="@{'/admin/users/' + ${usr.id} + '/makeAdmin'}"
+                              method="post" style="display: inline;">
+                            <button type="submit" class="cta-btn">Make Admin</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             </tbody>

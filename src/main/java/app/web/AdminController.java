@@ -1,6 +1,5 @@
 package app.web;
 
-import app.model.Role;
 import app.model.User;
 import app.security.AuthenticationMetadata;
 import app.service.UserService;
@@ -25,18 +24,21 @@ public class AdminController {
         this.userService = userService;
     }
 
+
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView listNonAdminUsers(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView listUsers(@AuthenticationPrincipal AuthenticationMetadata auth) {
+        ModelAndView modelAndView = new ModelAndView("admin-users");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("admin-users");
+        User currentUser = userService.findByUsername(auth.getUsername());
 
-        User user = userService.findByUsername(authenticationMetadata.getUsername());
+        List<User> users = userService.findAll()
+                .stream()
+                .filter(u -> !u.getId().equals(currentUser.getId()))
+                .toList();
 
-        List<User> nonAdminUsers = userService.findAllByRole(Role.USER);
-        modelAndView.addObject("nonAdminUsers", nonAdminUsers);
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("users", users);
+        modelAndView.addObject("user", currentUser);
 
         return modelAndView;
     }
@@ -52,5 +54,13 @@ public class AdminController {
 
         return modelAndView;
     }
+
+    @PostMapping("/users/{userId}/revokeAdmin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView revokeAdmin(@PathVariable UUID userId) {
+        userService.revokeAdmin(userId);
+        return new ModelAndView("redirect:/admin/users");
+    }
+
 
 }

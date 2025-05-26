@@ -31,10 +31,16 @@ public class IndexController {
         this.listingService = listingService;
     }
 
-
     @GetMapping("/")
-    public String GetIndexPage() {
-        return "index";
+    public ModelAndView getIndexPage(@AuthenticationPrincipal AuthenticationMetadata auth) {
+        ModelAndView modelAndView = new ModelAndView("index");
+
+        if (auth != null) {
+            User user = userService.findByUsername(auth.getUsername());
+            modelAndView.addObject("user", user);
+        }
+
+        return modelAndView;
     }
 
     @GetMapping("/login")
